@@ -41,7 +41,7 @@ export default class Restaurants extends Component {
             return;
         }
         let restaurants = this.state.restaurants;
-        let restaurant = {name: name, place: place};
+        let restaurant = {_id: name, name: name, place: place};
 
         let newRestaurants = restaurants.concat([restaurant]);
         this.setState({ restaurants: newRestaurants }, function () {
@@ -58,7 +58,7 @@ export default class Restaurants extends Component {
     render() {
         let restaurantNodes = this.state.restaurants.map(restaurant => {
             return (
-                <div key={restaurant.name}>
+                <div key={restaurant._id}>
                     <h1>{restaurant.name}</h1>
                     <h3>{restaurant.place}</h3>
                 </div>

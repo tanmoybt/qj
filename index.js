@@ -33,12 +33,19 @@ app.use(function(req, res, next) {
 
 
 // Serve static files from the React app
-app.use(express.static('public'));
+
 app.use(express.static(path.join(__dirname, 'client/build')));
 const apiRouter = require('./routes/api');
 app.use('/api', apiRouter);
 
+app.use(express.static(process.cwd() + '/public'));
 
+const facebook = require('./routes/facebook');
+app.use('/webhook', facebook);
+
+app.use(function(req, res) {
+    res.status(404).send({url: req.originalUrl + ' not found'})
+});
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname+'/client/build/index.html'));
