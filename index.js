@@ -17,15 +17,28 @@ mongoose.connect('mongodb://tanmoy12:asdfgh123456@ds119395.mlab.com:19395/quijin
     });
 
 
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json());
+
+app.use(function(req, res, next) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    res.setHeader('Access-Control-Allow-Methods', 'GET,HEAD,OPTIONS,POST,PUT,DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'Access-Control-Allow-Headers, Origin,Accept,' +
+        'X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers');
+//and remove cacheing so we get the most recent comments
+    res.setHeader('Cache-Control', 'no-cache');
+    next();
+});
+
+
 // Serve static files from the React app
+app.use(express.static('public'));
 app.use(express.static(path.join(__dirname, 'client/build')));
 const apiRouter = require('./routes/api');
 app.use('/api', apiRouter);
 
-app.use(express.static('public'));
-app.use(cors());
-app.use(bodyParser.urlencoded({extended: true}));
-app.use(bodyParser.json());
+
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname+'/client/build/index.html'));

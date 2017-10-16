@@ -22,6 +22,8 @@ apiRouter.route('/restaurants')
     .post(function(req, res) {
         const restaurant = new Restaurant();
         //body parser lets us use the req.body
+        console.log("here");
+        console.log(req.body);
         restaurant.name = req.body.name;
         restaurant.place = req.body.place;
         restaurant.save(function(err) {
