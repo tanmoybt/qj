@@ -24,7 +24,7 @@ export default class Restaurants extends Component {
     }
 
     componentDidMount(){
-        axios.get('http://localhost:8080/api/restaurants')
+        axios.get('/api/restaurants')
             .then(response => {
                 this.setState({ restaurants: response.data });
             })
@@ -48,7 +48,7 @@ export default class Restaurants extends Component {
             console.log(this.state.restaurants);
         });
 
-        axios.post('http://localhost:8080/api/restaurants', restaurant)
+        axios.post('/api/restaurants', restaurant)
             .catch(err => {
                 console.error(err);
                 this.setState({ restaurants: restaurants });
