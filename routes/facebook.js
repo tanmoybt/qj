@@ -5,7 +5,10 @@ const request = require('request');
 const accessToken = 'EAAbWF2z6CeoBAMheb2GH6CZA43A2q0JYCCvHxqxQ5QdSZBHZB7Vfc5IVy5xSMeOjvtbdjOV7yVS3nvKDDTYFsQyEWpdjz67coLMzWqu8UaBmRZBt25MuhX8tTpNLNqAfqhiC8cHr1fIL4TmuPv9ZCE93NJ7FvdeXY5OKXxnvgFAZDZD';
 
 router.get('/', function(req, res){
+    console.log("challenge has been taken.....................\n");
+
     if(req.query['hub.verify_token'] === 'nodebot'){
+        console.log("challenge has been validated.....................\n");
         res.send(req.query['hub.challenge'])
     }
     //res.send("wrong token");
