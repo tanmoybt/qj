@@ -2,7 +2,9 @@
 import React, {Component} from 'react';
 import axios from 'axios';
 
+
 import RestaurantBox from './RestaurantBox';
+import Foods from './Foods';
 
 export default class Restaurants extends Component {
     constructor(props) {
@@ -16,7 +18,10 @@ export default class Restaurants extends Component {
             rating: '',
             logo: '',
             image: '',
-            restaurants: []
+            restaurants: [],
+            res_id: '',
+            res_name: '',
+            foods: [],
         };
 
         this.handleNameChange = this.handleNameChange.bind(this);
@@ -28,6 +33,11 @@ export default class Restaurants extends Component {
         this.handleRestaurantSubmit = this.handleRestaurantSubmit.bind(this);
         this.handleRestaurantDelete = this.handleRestaurantDelete.bind(this);
         this.loadRestaurants = this.loadRestaurants.bind(this);
+        this.loadFoods = this.loadFoods.bind(this);
+        this.displayRestaurant = this.displayRestaurant.bind(this);
+        this.handleFoodSubmit = this.handleFoodSubmit.bind(this);
+
+
     }
 
     handleNameChange(e) {
@@ -51,9 +61,13 @@ export default class Restaurants extends Component {
 
 
     componentDidMount() {
+        const that= this;
         axios.get('/api/restaurants')
             .then(response => {
-                this.setState({restaurants: response.data});
+                this.setState({restaurants: response.data, res_id: response.data[0]._id, res_name: response.data[0].name}, function(){
+                    that.loadFoods();
+                });
+
             })
             .catch(function (error) {
                 console.log(error);
@@ -63,11 +77,36 @@ export default class Restaurants extends Component {
     loadRestaurants() {
         axios.get('/api/restaurants')
             .then(response => {
-                this.setState({restaurants: response.data});
+                this.setState({restaurants: response.data, res_id: response.data[0]._id, res_name: response.data[0].name});
             })
             .catch(function (error) {
                 console.log(error);
             })
+    }
+
+    loadFoods() {
+        axios.get('/api/foods/' + this.state.res_id)
+            .then(response => {
+                this.setState({foods: response.data});
+            })
+            .catch(function (error) {
+                console.log(error);
+            })
+    }
+
+    handleFoodSubmit(food){
+        let foods = this.state.foods;
+        let newFoods = foods.concat([food]);
+        this.setState({foods: newFoods}, function () {
+            console.log(this.state.foods);
+        });
+
+        axios.post('/api/foods', food)
+            .catch(err => {
+                console.error(err);
+                this.setState({foods: foods});
+            });
+
     }
 
     handleRestaurantSubmit(e) {
@@ -107,11 +146,19 @@ export default class Restaurants extends Component {
             });
     }
 
+    displayRestaurant(res_id, res_name){
+        const that=this;
+        this.setState({res_id: res_id, res_name: res_name}, function () {
+            that.loadFoods();
+        });
+    }
+
     render() {
         let restaurantNodes = this.state.restaurants.map(restaurant => {
             return (
                 <div key={restaurant._id}>
-                    <RestaurantBox restaurant={restaurant} onRestaurantDelete={this.handleRestaurantDelete}/>
+                    <RestaurantBox restaurant={restaurant} onRestaurantDelete={this.handleRestaurantDelete}
+                    onDisplayClick={this.displayRestaurant}/>
                 </div>
 
             )
@@ -171,6 +218,8 @@ export default class Restaurants extends Component {
 
                     </div>
                     <div className="col-md-6">
+                        <h2>{this.state.res_name}</h2>
+                        <Foods foods={this.state.foods} res_id={this.state.res_id} handleFoodSubmit={this.handleFoodSubmit}/>
                     </div>
                 </div>
             </div>

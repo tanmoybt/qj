@@ -1,20 +1,18 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
+const Router = express.Router();
 const request = require('request');
 const apiaiApp = require('apiai')('67efa2ecd2514286b05cb58fdc3643fc');
 const NodeGeocoder = require('node-geocoder');
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
-
 const PAGE_ACCESS_TOKEN = 'EAAcaq8rzMQoBAMr1FgOiTW3Y4rn3fMZApefDoSSqrztUBFD74YaC8wLR50ELPGQwcFrX7qz6JEUbeLZBDaQlimlpYj5ujLZBvOZAW8v2qCvtVhnWaKrYdqgqrQkENlPzqETQZC9A2MdUZAH6UHK42vGq8mcEuV78kCLnc1ZA7xBzwZDZD';
 
 
-const resTem =  require('./templates/genRestaurantTemplate');
+const resTem =  require('../templates/genRestaurantTemplate');
 
 /* For Facebook Validation */
-app.get('/webhook', (req, res) => {
+Router.get('/', (req, res) => {
     if (req.query['hub.mode'] && req.query['hub.verify_token'] === 'quijinnbot') {
         res.status(200).send(req.query['hub.challenge']);
     } else {
@@ -26,7 +24,7 @@ app.get('/webhook', (req, res) => {
 let data = [];
 
 /* Handling all messenges */
-app.post('/webhook', (req, res) => {
+Router.post('/', (req, res) => {
     //console.log(req.body);
     if (req.body.object === 'page') {
         req.body.entry.forEach((entry) => {
@@ -57,19 +55,16 @@ app.post('/webhook', (req, res) => {
     }
 });
 
-console.log(resTem.resTem());
 
-app.post('/chatfuel', (req, res) => {
+Router.post('/chatfuel', (req, res) => {
     console.log('here');
     console.log(req.body);
 });
 
-app.get('/chatfuel/:get', (req, res) => {
+Router.get('/chatfuel/:get', (req, res) => {
     console.log('here');
     console.log(req.body);
 });
-
-
 
 function sendMessage(event) {
     let sender = event.sender.id;
@@ -162,8 +157,6 @@ function sendPostback(event) {
 
     console.log(data[sender]);
     data[sender] = {text: event.postback.title};
-
-
 }
 
 
@@ -231,7 +224,4 @@ function sendRequest(sender, messageData) {
 }
 
 
-
-const server = app.listen(process.env.PORT || 5000, () => {
-    console.log('Express server listening on port %d in %s mode', server.address().port, app.settings.env);
-});
+module.exports = Router;

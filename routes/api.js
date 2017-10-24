@@ -3,6 +3,7 @@ const app = express();
 const apiRouter = express.Router();
 
 const Restaurant = require('../model/Restaurants');
+const Food = require('../model/Foods');
 
 apiRouter.route('/restaurants')
     .get(function(req, res) {
@@ -54,5 +55,49 @@ apiRouter.route('/restaurants/:restaurant_id')
             res.json({ message: 'restaurant has been deleted' })
         })
     });
+
+
+
+apiRouter.route('/foods/:restaurant_id')
+    .get(function(req, res) {
+        Food.find({ res_id: req.params.restaurant_id }, function(err, foods) {
+            if (err)
+                res.send(err);
+            res.json(foods);
+        });
+    });
+
+apiRouter.route('/foods')
+    .post(function(req, res) {
+        const food = new Food();
+        food.res_id = req.body.res_id;
+        food.food_name = req.body.food_name;
+        food.food_type = req.body.food_type;
+        food.food_size= req.body.food_size;
+        food.price= req.body.price;
+        food.cuisine= req.body.cuisine;
+        food.rating= req.body.rating;
+
+        console.log(food);
+
+        food.save(function(err) {
+            if (err)
+                res.send(err);
+            res.json({ message: 'food successfully added!' });
+        });
+    });
+
+
+apiRouter.route('/foods/:food_id')
+
+    .delete(function(req, res) {
+        Food.remove({ _id: req.params.food_id }, function(err, food) {
+            if (err)
+                res.send(err);
+            res.json({ message: 'food has been deleted' })
+        })
+    });
+
+
 
 module.exports = apiRouter;

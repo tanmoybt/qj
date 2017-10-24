@@ -40,8 +40,8 @@ app.use('/api', apiRouter);
 
 app.use(express.static(process.cwd() + '/public'));
 
-const facebook = require('./routes/facebook');
-app.use('/webhook', facebook);
+const webhook = require('./routes/facebook/webhook');
+app.use('/webhook', webhook);
 
 app.use(function(req, res) {
     res.status(404).send({url: req.originalUrl + ' not found'})
@@ -51,7 +51,7 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname+'/client/build/index.html'));
 });
 
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 5000;
 
 app.listen(port);
 console.log(`Quijinn listening on ${port}`);
