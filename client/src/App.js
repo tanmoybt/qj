@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
-import './App.css';
-import Restaurants from './Restaurants';
+import Restaurants from './Components/Restaurants';
 
 class App extends Component {
   render() {
     return (
-      <div className="App">
-        <h1>Welcome to Quijinn</h1>
+      <div className="App container-fluid">
         <Restaurants/>
       </div>
     );

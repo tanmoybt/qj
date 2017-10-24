@@ -1,36 +1,58 @@
-// itemRoutes.js
 const express = require('express');
 const app = express();
 const apiRouter = express.Router();
 
-// Require Item model in our routes module
 const Restaurant = require('../model/Restaurants');
 
-// Defined store route
 apiRouter.route('/restaurants')
-//retrieve all comments from the database
     .get(function(req, res) {
-        //looks at our Comment Schema
         Restaurant.find(function(err, restaurants) {
             if (err)
                 res.send(err);
-            //responds with a json object of our database comments.
             res.json(restaurants);
         });
     })
-    //post new comment to the database
     .post(function(req, res) {
         const restaurant = new Restaurant();
-        //body parser lets us use the req.body
-        console.log("here");
-        console.log(req.body);
         restaurant.name = req.body.name;
-        restaurant.place = req.body.place;
+        restaurant.location = req.body.location;
+        restaurant.region= req.body.region;
+        restaurant.zip_code= req.body.zip;
+        restaurant.cuisine= req.body.cuisine;
+        restaurant.rating= req.body.rating;
+
+        console.log(restaurant);
+
         restaurant.save(function(err) {
             if (err)
                 res.send(err);
             res.json({ message: 'restaurant successfully added!' });
         });
+    });
+
+apiRouter.route('/restaurants/:restaurant_id')
+
+    .put(function(req, res) {
+        Restaurant.findById(req.params.restaurant_id, function(err, restaurant) {
+            if (err) res.send(err);
+
+            (req.body.author) ? restaurant.author = req.body.author : null;
+            (req.body.text) ? restaurant.text = req.body.text : null;
+
+            restaurant.save(function(err) {
+                if (err)
+                    res.send(err);
+                res.json({ message: 'Restaurant has been updated' });
+            });
+        });
+    })
+
+    .delete(function(req, res) {
+        Restaurant.remove({ _id: req.params.restaurant_id }, function(err, restaurant) {
+            if (err)
+                res.send(err);
+            res.json({ message: 'restaurant has been deleted' })
+        })
     });
 
 module.exports = apiRouter;
