@@ -54,7 +54,7 @@ function makeTemplate(foods) {
                     "buttons": [
                         {
                             "type": "postback",
-                            "title": "Pick",
+                            "title": "Add to cart",
                             "payload": food.food_name
                         }
                     ]
