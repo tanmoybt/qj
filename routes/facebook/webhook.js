@@ -10,6 +10,7 @@ const PAGE_ACCESS_TOKEN = 'EAAcaq8rzMQoBAMr1FgOiTW3Y4rn3fMZApefDoSSqrztUBFD74YaC
 
 
 const resTem =  require('../templates/genRestaurantTemplate');
+const foodTem = require('../templates/genFoodTemplate');
 
 /* For Facebook Validation */
 Router.get('/', (req, res) => {
@@ -45,10 +46,10 @@ Router.post('/', (req, res) => {
                     if (event.message.text) {
                         //console.log('from fb : '+ JSON.stringify(event, null, 2));
                         //sendMessage(event);
-                        resTem.genRestaurantByZip('1111', function(err, result){
+                        foodTem.genFoodByCuisine('Fast food', function(err, result){
                             if(err) console.log(err);
                             else {
-                                //console.log(JSON.stringify(result, null,2));
+                                console.log(JSON.stringify(result, null,2));
                                 sendRequest(event.sender.id, result);
                             }
                         });
