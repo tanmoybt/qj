@@ -10,6 +10,13 @@ mongoose.Promise = require('bluebird');
 mongoose.connect('mongodb://tanmoy12:asdfgh123456@ds119395.mlab.com:19395/quijinndata', { useMongoClient: true })
     .then(() => { // if all is ok we will be here
         console.log('Start');
+        // const genRes = require('./routes/templates/genRestaurantTemplate');
+        // genRes.genRestaurantByZip('1111', function(err, result){
+        //     if(err) console.log(err);
+        //     else {
+        //         console.log(JSON.stringify(result, null,2));
+        //     }
+        // });
     })
     .catch(err => { // if error we will be here
         console.error('App starting error:', err.stack);

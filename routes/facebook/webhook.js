@@ -25,7 +25,7 @@ let data = [];
 
 /* Handling all messenges */
 Router.post('/', (req, res) => {
-    //console.log(req.body);
+    console.log(req.body);
     if (req.body.object === 'page') {
         req.body.entry.forEach((entry) => {
             entry.messaging.forEach((event) => {
@@ -44,7 +44,14 @@ Router.post('/', (req, res) => {
 
                     if (event.message.text) {
                         //console.log('from fb : '+ JSON.stringify(event, null, 2));
-                        sendMessage(event);
+                        //sendMessage(event);
+                        resTem.genRestaurantByZip('1111', function(err, result){
+                            if(err) console.log(err);
+                            else {
+                                //console.log(JSON.stringify(result, null,2));
+                                sendRequest(event.sender.id, result);
+                            }
+                        });
                     }
 
                 }

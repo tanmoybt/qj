@@ -31,6 +31,35 @@ apiRouter.route('/restaurants')
         });
     });
 
+apiRouter.route('/restaurants/region/:region_name')
+    .get(function(req, res) {
+        Restaurant.find({region: req.params.region_name}, function(err, restaurants) {
+            if (err)
+                res.send(err);
+            res.json(restaurants);
+        });
+    });
+
+apiRouter.route('/restaurants/zip/:zip')
+    .get(function(req, res) {
+        Restaurant.find({zip_code: req.params.zip}, function(err, restaurants) {
+            if (err)
+                res.send(err);
+            res.json(restaurants);
+        });
+    });
+
+apiRouter.route('/restaurants/cuisine/:cuisine')
+    .get(function(req, res) {
+        Restaurant.find({cuisine: req.params.cuisine}, function(err, restaurants) {
+            if (err)
+                res.send(err);
+            res.json(restaurants);
+        });
+    });
+
+
+
 apiRouter.route('/restaurants/:restaurant_id')
 
     .put(function(req, res) {
