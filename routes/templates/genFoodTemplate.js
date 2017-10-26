@@ -36,6 +36,21 @@ module.exports.genFoodByCuisine = function (cuisine, callback) {
         })
 };
 
+module.exports.findFoodByID = function (food_id, callback) {
+    Food.findOne({_id: food_id}, function(err, result){
+        let food = {
+          food_id: result._id,
+          food_name: result.food_name,
+          quantity: 1,
+          price: result.price,
+          image_url:  "https://media-cdn.tripadvisor.com/media/photo-s/0a/56/44/5a/restaurant.jpg"
+        };
+        callback(err, food);
+    });
+};
+
+
+
 
 function makeTemplate(foods) {
     if(!foods.size) {
@@ -55,7 +70,7 @@ function makeTemplate(foods) {
                         {
                             "type": "postback",
                             "title": "Add to cart",
-                            "payload": food.food_name
+                            "payload": food._id
                         }
                     ]
                 }

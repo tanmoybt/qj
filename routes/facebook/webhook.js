@@ -15,6 +15,8 @@ const genWhat = require('../templates/genWhatToDo');
 const genLoc = require('../templates/genGetLocation');
 const genCart = require('../templates/genCartTemplate');
 const pipeline = require('./pipeline');
+const postback = require('./postbacks');
+const messages = require('./messages');
 
 /* For Facebook Validation */
 Router.get('/', (req, res) => {
@@ -30,65 +32,17 @@ let data = [];
 
 /* Handling all messenges */
 Router.post('/', (req, res) => {
-    console.log(req.body);
+    //console.log(req.body);
     if (req.body.object === 'page') {
         req.body.entry.forEach((entry) => {
             entry.messaging.forEach((event) => {
                 console.log('full event : ' + JSON.stringify(event, null, 2));
-                if (event.postback) {
-                    //sendPostback(event);
+                if(event.postback){
+                    postback.postbackProcessor(event.sender.id, event.postback);
                 }
-                if (event.message) {
-                    console.log('full event : ' + JSON.stringify(event, null, 2));
-                    if (event.message.attachments) {
-                        if (event.message.attachments[0].type === 'location') {
-
-                            sendMessage(event);
-                        }
-                    }
-
-                    if (event.message.text) {
-                        //console.log('from fb : '+ JSON.stringify(event, null, 2));
-                        //sendMessage(event);
-                        // genWhat.genFoodByCuisine('Fast food', function(err, result){
-                        //     if(err) console.log(err);
-                        //     else {
-                        //         console.log(JSON.stringify(result, null,2));
-                        //         sendRequest(event.sender.id, result);
-                        //     }
-                        // });
-                        pipeline.data[event.sender.id] =
-                            {
-                                foods:
-                                    [
-                                        {
-                                            food_id: 1,
-                                            food_name: 'Burger',
-                                            quantity: 2,
-                                            price: 120,
-                                            image_url: "https://media-cdn.tripadvisor.com/media/photo-s/0a/56/44/5a/restaurant.jpg"
-                                        },
-                                        {
-                                            food_id: 2,
-                                            food_name: 'Pizza',
-                                            quantity: 1,
-                                            price: 700,
-                                            image_url: "https://media-cdn.tripadvisor.com/media/photo-s/0a/56/44/5a/restaurant.jpg"
-                                        },
-                                        {
-                                            food_id: 3,
-                                            food_name: 'Pasta',
-                                            quantity: 4,
-                                            price: 250,
-                                            image_url: "https://media-cdn.tripadvisor.com/media/photo-s/0a/56/44/5a/restaurant.jpg"
-                                        }
-                                    ]
-                            };
-                        sendRequest(event.sender.id, genCart.genCart(pipeline.data[event.sender.id].foods));
-                    }
-
+                if(event.message) {
+                    messages.messagesProcessor(event.sender.id, event.message);
                 }
-
             });
         });
         res.status(200).end();
@@ -114,11 +68,11 @@ function sendMessage(event) {
             console.log(data[sender]);
 
             data[sender] = {text: aiText};
-            if (action == 'order_food.processType') {
+            if (action === 'order_food.processType') {
                 sendQuickReplyProcessType(sender);
                 return;
             }
-            else if (action == 'order_food.processType.getLocation') {
+            else if (action === 'order_food.processType.getLocation') {
                 getLocation(sender);
                 return;
             }
@@ -138,8 +92,6 @@ function sendMessage(event) {
             let options = {
                 provider: 'google'
             };
-
-            delete data[sender];
             const geocoder = NodeGeocoder(options);
             let lat = event.message.attachments[0].payload.coordinates.lat;
             let lng = event.message.attachments[0].payload.coordinates.long;
