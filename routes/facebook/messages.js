@@ -15,39 +15,41 @@ const PAGE_ACCESS_TOKEN = 'EAAcaq8rzMQoBAMr1FgOiTW3Y4rn3fMZApefDoSSqrztUBFD74YaC
 
 module.exports.messagesProcessor = function (sender, message) {
     if (message.attachments && message.attachments[0].type === 'location') {
-        let options = {
-            provider: 'google',
-            apiKey: 'AIzaSyBeMeLnG6dPdAmOnhNeIyBZhYgsY9HGGbw'
-        };
-        const geocoder = NodeGeocoder(options);
-        let lat = message.attachments[0].payload.coordinates.lat;
-        let lng = message.attachments[0].payload.coordinates.long;
+        if (!pipeline.data[sender].location.value) {
+            let options = {
+                provider: 'google',
+                apiKey: 'AIzaSyBeMeLnG6dPdAmOnhNeIyBZhYgsY9HGGbw'
+            };
+            const geocoder = NodeGeocoder(options);
+            let lat = message.attachments[0].payload.coordinates.lat;
+            let lng = message.attachments[0].payload.coordinates.long;
 
-        console.log(lat + ' ' + lng);
+            console.log(lat + ' ' + lng);
 
-        geocoder.reverse({lat: lat, lon: lng},
-            function (err, res) {
-                if (err) {
-                    console.log(err);
-                    return;
-                }
-                console.log(res);
-                console.log(res[0].formattedAddress);
-                console.log(res[0].zipcode);
-                if (res[0].zipcode) {
-                    resTem.genRestaurantByZip('1111', function (err, results) {
-                        if (err) throw err;
-                        else {
-                            sendRequest(sender, results);
-                        }
-                    });
-                }
-            });
+            geocoder.reverse({lat: lat, lon: lng},
+                function (err, res) {
+                    if (err) {
+                        console.log(err);
+                        return;
+                    }
+                    console.log(res);
+                    console.log(res[0].formattedAddress);
+                    console.log(res[0].zipcode);
+                    if (res[0].zipcode) {
+                        resTem.genRestaurantByZip('1111', function (err, results) {
+                            if (err) throw err;
+                            else {
+                                sendRequest(sender, results);
+                            }
+                        });
+                    }
+                });
+        }
     }
     else if (message.quick_reply) {
         console.log('quick reply :' + message.quick_reply.payload);
         if (message.quick_reply.payload === 'ORDER_FOOD') {
-            sendRequest(sender, genLoc.genGetLocation());
+            apiai.apiaiProcessor(sender, message.quick_reply.payload);
         }
     }
     else if (message.text) {

@@ -1,6 +1,7 @@
 const request = require('request');
 const pipeline = require('./pipeline');
 const apiai = require('./apiai');
+const actions = require('./actions');
 
 const PAGE_ACCESS_TOKEN = 'EAAcaq8rzMQoBAMr1FgOiTW3Y4rn3fMZApefDoSSqrztUBFD74YaC8wLR50ELPGQwcFrX7qz6JEUbeLZBDaQlimlpYj5ujLZBvOZAW8v2qCvtVhnWaKrYdqgqrQkENlPzqETQZC9A2MdUZAH6UHK42vGq8mcEuV78kCLnc1ZA7xBzwZDZD';
 const resTem = require('../templates/genRestaurantTemplate');
@@ -55,8 +56,7 @@ module.exports.postbackProcessor = function (sender, postback) {
             apiai.apiaiProcessor(sender, postback.title);
         }
         else {
-            let messageData = {text: 'Bot has restarted'};
-            sendRequest(sender, messageData);
+            actions.actionsProcessor(sender, 'restartBotConfirm', 'Bot Restarted');
         }
     }
 };
