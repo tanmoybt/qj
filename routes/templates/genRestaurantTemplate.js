@@ -20,9 +20,9 @@ module.exports.genRestaurantByRegion = function (region, index, callback) {
     });
 };
 
-module.exports.genRestaurantByZip = function (zip, callback) {
+module.exports.genRestaurantByZip = function (zip, index, callback) {
     let perPage = 4;
-    let page = index;
+    let page = index+1;
     Restaurant.paginate({zip_code : zip}, { page: page, limit: perPage }, function(err, result) {
         // result.docs
         // result.total
@@ -30,7 +30,7 @@ module.exports.genRestaurantByZip = function (zip, callback) {
         // result.page - 3
         // result.pages
         console.log(result.total);
-        if(result.total > (page+1)*perPage){
+        if(result.total > (page)*perPage){
             callback(err, makeTemplate(result.docs, true));
         }
         else {
@@ -39,9 +39,9 @@ module.exports.genRestaurantByZip = function (zip, callback) {
     });
 };
 
-module.exports.genRestaurantByCuisine = function (cuisine, callback) {
+module.exports.genRestaurantByCuisine = function (cuisine,index, callback) {
     let perPage = 4;
-    let page = index;
+    let page = index+1;
     Restaurant.paginate({cuisine : cuisine}, { page: page, limit: perPage }, function(err, result) {
         // result.docs
         // result.total
@@ -49,7 +49,7 @@ module.exports.genRestaurantByCuisine = function (cuisine, callback) {
         // result.page - 3
         // result.pages
         console.log(result.total);
-        if(result.total > (page+1)*perPage){
+        if(result.total > (page)*perPage){
             callback(err, makeTemplate(result.docs, true));
         }
         else {

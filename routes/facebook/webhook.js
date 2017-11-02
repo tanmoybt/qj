@@ -32,7 +32,7 @@ let data = [];
 
 /* Handling all messenges */
 Router.post('/', (req, res) => {
-    //console.log(req.body);
+    //console.log(JSON.stringify(req, null, 2));
     if (req.body.object === 'page') {
         req.body.entry.forEach((entry) => {
             entry.messaging.forEach((event) => {
@@ -48,115 +48,6 @@ Router.post('/', (req, res) => {
         res.status(200).end();
     }
 });
-
-function sendMessage(event) {
-    let sender = event.sender.id;
-
-    if (event.message.text) {
-        let text = event.message.text;
-
-
-        let apiai = apiaiApp.textRequest(text, {
-            sessionId: sender // use any arbitrary id
-        });
-
-        apiai.on('response', (response) => {
-            let aiText = response.result.fulfillment.speech;
-            let action = response.result.action;
-            console.log('from api :');
-            console.log(JSON.stringify(response, null, 2));
-            console.log(data[sender]);
-
-            data[sender] = {text: aiText};
-            if (action === 'order_food.processType') {
-                sendQuickReplyProcessType(sender);
-                return;
-            }
-            else if (action === 'order_food.processType.getLocation') {
-                getLocation(sender);
-                return;
-            }
-            let messageData = {text: aiText};
-            sendRequest(sender, messageData);
-        });
-
-        apiai.on('error', (error) => {
-            console.log(error);
-        });
-
-        apiai.end();
-    }
-    else if (event.message.attachments) {
-
-        if (event.message.attachments[0].type === 'location') {
-            let options = {
-                provider: 'google'
-            };
-            const geocoder = NodeGeocoder(options);
-            let lat = event.message.attachments[0].payload.coordinates.lat;
-            let lng = event.message.attachments[0].payload.coordinates.long;
-
-            console.log(lat + ' ' + lng);
-
-            geocoder.reverse({lat: lat, lon: lng},
-                function (err, res) {
-                    if (err) {
-                        console.log(err);
-                        return;
-                    }
-                    console.log(res);
-                    let messageData = {text: "looks like you're at " + res[0].formattedAddress};
-                    sendRequest(sender, messageData);
-
-
-                    let apiai = apiaiApp.textRequest(res[0].formattedAddress, {
-                        sessionId: sender // use any arbitrary id
-                    });
-
-                    apiai.on('response', (response) => {
-                        let aiText = response.result.fulfillment.speech;
-                        let action = response.result.action;
-                        console.log('from api :');
-                        console.log(JSON.stringify(response, null, 2));
-                        if (action == 'show_restaurants') {
-                            let messageData = {text: aiText};
-                            sendRequest(sender, messageData);
-
-                            sendGeneric(sender);
-                            return;
-                        }
-                    });
-
-                    apiai.on('error', (error) => {
-                        console.log(error);
-                    });
-
-                    apiai.end();
-                });
-
-        }
-    }
-}
-
-function sendRequest(sender, messageData) {
-    request({
-        url: "https://graph.facebook.com/v2.6/me/messages",
-        qs: {access_token: PAGE_ACCESS_TOKEN},
-        method: "POST",
-        json: {
-            recipient: {id: sender},
-            message: messageData
-        }
-    }, function (err, response, body) {
-        if (err) {
-            console.log("sending error");
-            console.log(err);
-        } else if (response.body.error) {
-            console.log("response body error");
-            console.log(response.body.error);
-        }
-    })
-}
 
 
 module.exports = Router;

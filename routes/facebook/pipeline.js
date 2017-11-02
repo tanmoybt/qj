@@ -7,6 +7,7 @@ module.exports.setSenderData = function (sender) {
         data[sender] =
             {
                 whattodo: '',
+                name : '',
                 lastactiontaken: {
                     action:'', speech:'', parameters: []
                 },
@@ -30,6 +31,7 @@ module.exports.resetSenderData = function (sender) {
             lastactiontaken: {
                 action:'', speech:'', parameters: []
             },
+            name : '',
             location: {
                 address: '', zip: '', confirmed: false, value: false
             },

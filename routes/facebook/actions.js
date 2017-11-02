@@ -152,9 +152,9 @@ module.exports.actionsProcessor= function (sender, action, speech, parameters, r
         sendRequest(sender, messageData);
         apiai.apiaiProcessor(sender, messageData.text);
     }
-    else if(action === 'deliverygetphoneNumber'){
-        pipeline.data[sender].phone = parameters.phone-number;
-        sendRequestcall(sender, genCart.genCart(pipeline.data[sender].foods), function () {
+    else if(action === 'deliverySetPhoneNumber'){
+        pipeline.data[sender].phone = parameters.phonenumber;
+        sendRequestcall(sender, genCart.genCart(sender), function () {
             sendRequest(sender, genCart.genConfirmOrder());
         });
     }

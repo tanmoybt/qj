@@ -1,7 +1,12 @@
 let pipeline = require('../facebook/pipeline');
 
-
-module.exports.genCart = function (foods) {
+module.exports.genCart = function (sender) {
+    let foods = pipeline.data[sender].foods;
+    let address = pipeline.data[sender].location.address;
+    let phone = pipeline.data[sender].phone;
+    let name = pipeline.data[sender].name;
+    if(!name) name = "anjan";
+    console.log(foods[0].food_name + address + phone + name);
     if (!foods.size) {
         let amount = 0;
         let messageElements = foods.map(food => {
@@ -23,15 +28,14 @@ module.exports.genCart = function (foods) {
                 "type": "template",
                 "payload": {
                     "template_type": "receipt",
-                    "recipient_name": "Anjan",
+                    "recipient_name": name,
                     "order_number": "12345678902",
                     "currency": "USD",
-                    "payment_method": "Pay on Delivery",
+                    "payment_method": "Cash on Delivery",
                     "order_url": "http://petersapparel.parseapp.com/order?order_id=123456",
-                    "timestamp": "1428444852",
+                    "timestamp": Math.floor(Date.now() / 1000),
                     "address": {
-                        "street_1": "49",
-                        "street_2": "Kawran Bazaar",
+                        "street_1": address,
                         "city": "Dhaka",
                         "postal_code": "1215",
                         "state": "Dhaka",
@@ -63,7 +67,7 @@ module.exports.genCart = function (foods) {
     }
 };
 
-module.exports.genCartCarousel = function (foods) {
+module.exports.genCartCarousel = function (foods, address, phone) {
     if (!foods.size) {
         let amount = 0;
 

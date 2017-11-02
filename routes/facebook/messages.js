@@ -52,12 +52,18 @@ module.exports.messagesProcessor = function (sender, message) {
                     console.log(res);
                     console.log(res[0].formattedAddress);
                     console.log(res[0].zipcode);
+                    pipeline.data[sender].location.address = res[0].formattedAddress;
                     let messageData= {text: 'The location is traced from get location ' + res[0].formattedAddress + ', full confirmation, no action'};
                     apiai.apiaiProcessor(sender, messageData.text);
-                    sendRequest(sender, {text: "Give me a phone number to find you and we'll be done"});
+                    messageData= {text: 'Your address is ' + res[0].formattedAddress};
+                    sendRequestcall(sender, messageData, function () {
+                        sendRequest(sender, {text: "Give me a phone number to find you and we'll be done"});
+                    });
+
                 });
         }
     }
+
     else if (message.quick_reply) {
         console.log('quick reply :' + message.quick_reply.payload);
         if (message.quick_reply.payload === 'ORDER_FOOD') {
@@ -73,7 +79,9 @@ module.exports.messagesProcessor = function (sender, message) {
             }
         }
     }
+
     else if (message.text) {
+        //getProfile(sender);
         console.log('text : ' + message.text);
         apiai.apiaiProcessor(sender, message.text);
     }
@@ -227,3 +235,4 @@ function sendRequestcall(sender, messageData, callback) {
         }
     })
 }
+

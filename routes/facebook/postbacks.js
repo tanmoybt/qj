@@ -2,6 +2,7 @@ const request = require('request');
 const pipeline = require('./pipeline');
 const apiai = require('./apiai');
 const actions = require('./actions');
+const Profile = require('../../model/Profiles');
 
 const PAGE_ACCESS_TOKEN = 'EAAcaq8rzMQoBAMr1FgOiTW3Y4rn3fMZApefDoSSqrztUBFD74YaC8wLR50ELPGQwcFrX7qz6JEUbeLZBDaQlimlpYj5ujLZBvOZAW8v2qCvtVhnWaKrYdqgqrQkENlPzqETQZC9A2MdUZAH6UHK42vGq8mcEuV78kCLnc1ZA7xBzwZDZD';
 const resTem = require('../templates/genRestaurantTemplate');
@@ -11,7 +12,26 @@ const genLoc = require('../templates/genGetLocation');
 const genCart = require('../templates/genCartTemplate');
 
 module.exports.postbackProcessor = function (sender, postback) {
-    if (postback.title === 'Add to cart') {
+    if(postback.payload === 'GET_STARTED_PAYLOAD'){
+        getProfile(sender, function (name) {
+            pipeline.setSenderData(sender);
+            let nameFormatted= name.first_name + ' '+ name.last_name;
+            pipeline.data[sender].name = nameFormatted;
+
+
+            sendRequestcall(sender, genWhat.genGetStarted(nameFormatted), function () {
+                const profile = new Profile();
+                profile.first_name = name.first_name;
+                profile.last_name = name.first_name;
+                profile.sender_id= sender;
+
+                console.log(profile);
+                profile.save(function(err) {});
+            });
+        });
+    }
+
+    else if (postback.title === 'Add to cart') {
         pipeline.setSenderData(sender);
         console.log('Food : ' + postback.payload);
         foodTem.findFoodByID(postback.payload, function (err, food) {
@@ -43,6 +63,7 @@ module.exports.postbackProcessor = function (sender, postback) {
 
         });
     }
+
     else if (postback.title === 'Pick') {
         console.log('Restaurant : ' + postback.payload);
         foodTem.genFoodByRestaurant(postback.payload, function (err, results) {
@@ -67,6 +88,7 @@ module.exports.postbackProcessor = function (sender, postback) {
             sendRequest(sender, messageData);
         }
     }
+
     else if (postback.title === 'Restart bot') {
         if (pipeline.data[sender]) {
             apiai.apiaiProcessor(sender, postback.title);
@@ -75,6 +97,7 @@ module.exports.postbackProcessor = function (sender, postback) {
             actions.actionsProcessor(sender, 'restartBotConfirm', 'Bot Restarted');
         }
     }
+
     else if (postback.title === 'View More') {
         if (pipeline.data[sender]) {
             viewMoreProcessor(sender, pipeline.data[sender].location.address,
@@ -84,6 +107,7 @@ module.exports.postbackProcessor = function (sender, postback) {
             actions.actionsProcessor(sender, 'restartBotConfirm', 'Bot Restarted');
         }
     }
+
     else if (postback.payload.includes('CHANGE')){
         let res =postback.payload.split('_');
         let flag = false;
@@ -109,6 +133,7 @@ module.exports.postbackProcessor = function (sender, postback) {
             sendRequest(sender, messageData);
         }
     }
+
     else if (postback.payload.includes('REMOVE')){
         let res =postback.payload.split('_');
         let flag = false;
@@ -135,6 +160,7 @@ module.exports.postbackProcessor = function (sender, postback) {
             sendRequest(sender, messageData);
         }
     }
+
     else if (postback.payload ==='CHECKOUT'){
         if(pipeline.data[sender].foods.length>0){
             if(pipeline.data[sender].location.address && !pipeline.data[sender].location.confirmed){
@@ -152,17 +178,11 @@ module.exports.postbackProcessor = function (sender, postback) {
             sendRequest(sender, messageData);
         }
     }
-};
 
-function checkCart(sender, food_id) {
-    let flag = true;
-    pipeline.data[sender].foods.forEach(function (foodItem) {
-        if(foodItem.food_id === food_id){
-            console.log('false');
-        }
-    });
-    return flag;
-}
+    else if (postback.payload === 'GET_ORDER'){
+        sendRequest(sender, {text: ':D'});
+    }
+};
 
 function viewMoreProcessor(sender, address, zipcode, region) {
     if (!address && region && zipcode) {
@@ -213,7 +233,6 @@ function viewMoreProcessor(sender, address, zipcode, region) {
     }
 }
 
-
 function sendRequest(sender, messageData) {
     request({
         url: "https://graph.facebook.com/v2.6/me/messages",
@@ -255,4 +274,28 @@ function sendRequestcall(sender, messageData, callback) {
             callback();
         }
     })
+}
+
+function getProfile(PSID, callback){
+    let link = "https://graph.facebook.com/v2.6/" + PSID + "?fields=first_name,last_name,profile_pic&access_token=" +PAGE_ACCESS_TOKEN;
+    //console.log(link);
+    let name;
+    request(link, function (error, response, body) {
+        console.log('error:', error); // Print the error if one occurred
+        //console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+        //console.log(JSON.parse(body, null, 2));
+        let info = JSON.parse(body, null, 2);
+        //console.log(JSON.parse(response, null, 2));// Print the HTML for the Google homepage.
+        console.log(info.first_name);
+        console.log(info.last_name);
+        if(body){
+            name= {
+                first_name: info.first_name,
+                last_name: info.last_name
+            };
+        }
+        callback(name);
+    });
+
+
 }
