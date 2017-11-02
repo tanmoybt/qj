@@ -11,55 +11,208 @@ const genLoc = require('../templates/genGetLocation');
 const genCart = require('../templates/genCartTemplate');
 
 module.exports.postbackProcessor = function (sender, postback) {
-    if(postback.title === 'Add to cart'){
-        console.log('Food : '+ postback.payload);
-        if(!pipeline.data[sender]){
-            pipeline.data[sender] = [];
-        }
+    if (postback.title === 'Add to cart') {
+        pipeline.setSenderData(sender);
+        console.log('Food : ' + postback.payload);
         foodTem.findFoodByID(postback.payload, function (err, food) {
-            if(err) throw err;
+            if (err) throw err;
             console.log(food);
-            if(pipeline.data[sender].foods){
-                pipeline.data[sender].foods.push(food);
-                console.log('more: '+pipeline.data[sender]);
+            console.log('more: ' + JSON.stringify(pipeline.data[sender], null,2));
+            let flag = true;
+            pipeline.data[sender].foods.forEach(function (foodItem) {
+                console.log((typeof foodItem.food_id)+' ' +foodItem.food_id);
+                console.log((typeof food.food_id)+' ' +food.food_id);
+                if(foodItem.food_id.equals(food.food_id)){
+                    console.log('falsify');
+                    flag= false;
+                }
+            });
+            if(flag){
+                pipeline.data[sender].foodattending= food;
+
+                apiai.apiaiProcessor(sender, 'add ' + food.food_name + ' to my cart, confirm');
+
+                let messageData= {text: 'How many of '+ food.food_name+ " would you order?"};
+                sendRequest(sender, messageData);
+
             }
-            else{
-                pipeline.data[sender] = {
-                    foods : [food]
-                };
-                console.log('1st' + pipeline.data[sender]);
+            else {
+                let messageData= {text: food.food_name+ " is already in your cart. To modify visit cart"};
+                sendRequest(sender, messageData);
             }
 
         });
     }
-    else if(postback.title === 'Pick'){
-        console.log('Restaurant : '+ postback.payload);
+    else if (postback.title === 'Pick') {
+        console.log('Restaurant : ' + postback.payload);
         foodTem.genFoodByRestaurant(postback.payload, function (err, results) {
-            if(err) throw err;
+            if (err) throw err;
             else {
-                sendRequest(sender, results);
+                //apiai.apiaiProcessor(sender, 'The restaurant ' + postback.payload+ ' is picked, traced to no action');
+                let messageData = {text: "I'm loading food menu for restaurant, Pick other restaurants and see their menu. " + postback.payload};
+                sendRequestcall(sender, messageData, function () {
+                    sendRequest(sender, results);
+                });
             }
         });
     }
-    else if(postback.title === 'View cart'){
-        console.log('cart : '+ postback.payload);
-        if(pipeline.data[sender] && pipeline.data[sender].foods){
-            sendRequest(sender, genCart.genCart(pipeline.data[sender].foods));
+
+    else if (postback.title === 'View cart') {
+        console.log('cart : ' + postback.payload);
+        if (pipeline.data[sender] && pipeline.data[sender].foods) {
+            sendRequest(sender, genCart.genCartCarousel(pipeline.data[sender].foods));
         }
         else {
             let messageData = {text: 'Nothing on your cart'};
             sendRequest(sender, messageData);
         }
     }
-    else if(postback.title === 'Restart bot'){
-        if(pipeline.data[sender]){
+    else if (postback.title === 'Restart bot') {
+        if (pipeline.data[sender]) {
             apiai.apiaiProcessor(sender, postback.title);
         }
         else {
             actions.actionsProcessor(sender, 'restartBotConfirm', 'Bot Restarted');
         }
     }
+    else if (postback.title === 'View More') {
+        if (pipeline.data[sender]) {
+            viewMoreProcessor(sender, pipeline.data[sender].location.address,
+                pipeline.data[sender].location.zip, pipeline.data[sender].location.region);
+        }
+        else {
+            actions.actionsProcessor(sender, 'restartBotConfirm', 'Bot Restarted');
+        }
+    }
+    else if (postback.payload.includes('CHANGE')){
+        let res =postback.payload.split('_');
+        let flag = false;
+        let food;
+        pipeline.data[sender].foods.forEach(function (foodItem) {
+            if(foodItem.food_id.equals(res[1])){
+                console.log('falsify');
+                food= foodItem;
+                flag= true;
+            }
+        });
+        if(flag){
+            pipeline.data[sender].foodattending= food;
+
+            apiai.apiaiProcessor(sender, 'change the amount of this item ' + food.food_name + ' from '+ food.quantity+' confirm on cart ready');
+
+            let messageData= {text: 'You currently have '+food.quantity+' '+ food.food_name+ " in your cart now, How many would you order?"};
+            sendRequest(sender, messageData);
+
+        }
+        else {
+            let messageData= {text: food.food_name+ " not found in Cart"};
+            sendRequest(sender, messageData);
+        }
+    }
+    else if (postback.payload.includes('REMOVE')){
+        let res =postback.payload.split('_');
+        let flag = false;
+        let food;
+        let foodIndex=0;
+        let index=0;
+        pipeline.data[sender].foods.forEach(function (foodItem) {
+            if(foodItem.food_id.equals(res[1])){
+                food= foodItem;
+                flag=true;
+                foodIndex = index;
+            }
+            index++;
+        });
+        if(flag){
+            pipeline.data[sender].foods.splice(foodIndex, 1);
+            let messageData= {text: food.food_name+ " removed from cart."};
+            sendRequestcall(sender, messageData, function () {
+                sendRequest(sender, genCart.genCartCarousel(pipeline.data[sender].foods));
+            });
+        }
+        else {
+            let messageData= {text: food.food_name+ " not found in Cart"};
+            sendRequest(sender, messageData);
+        }
+    }
+    else if (postback.payload ==='CHECKOUT'){
+        if(pipeline.data[sender].foods.length>0){
+            if(pipeline.data[sender].location.address && !pipeline.data[sender].location.confirmed){
+                apiai.apiaiProcessor(sender, 'ready for checkout, the address is ' + pipeline.data[sender].location.address);
+                let messageData = {text: 'Great! Would you like delivery at this address : '+ pipeline.data[sender].location.address};
+                sendRequest(sender, messageData);
+            }
+            else {
+                apiai.apiaiProcessor(sender, 'ready for checkout, without an addrress');
+                sendRequest(sender, genLoc.genGetAddress());
+            }
+        }
+        else {
+            let messageData = {text: "Please add items to cart for checkout"};
+            sendRequest(sender, messageData);
+        }
+    }
 };
+
+function checkCart(sender, food_id) {
+    let flag = true;
+    pipeline.data[sender].foods.forEach(function (foodItem) {
+        if(foodItem.food_id === food_id){
+            console.log('false');
+        }
+    });
+    return flag;
+}
+
+function viewMoreProcessor(sender, address, zipcode, region) {
+    if (!address && region && zipcode) {
+        resTem.genRestaurantByRegion(region, pipeline.data[sender].restaurant.index, function (err, results) {
+            if (err) throw err;
+            else {
+                if (results.attachment.payload.elements.length > 1) {
+                    pipeline.data[sender].restaurant.index += 1;
+                    sendRequest(sender, results);
+                }
+                else {
+                    let messageData = {text: "Sorry, No more restaurants, select from the previous list"};
+                    sendRequest(sender, messageData);
+                }
+            }
+        });
+    }
+    else if (address && zipcode && region) {
+        resTem.genRestaurantByZip('1111', pipeline.data[sender].restaurant.index, function (err, results) {
+            if (err) throw err;
+            else {
+                if (results.attachment.payload.elements.length > 1) {
+                    pipeline.data[sender].restaurant.index++;
+                    sendRequest(sender, results);
+                }
+                else {
+                    let messageData = {text: "Sorry, No more restaurants, select from the previous list"};
+                    sendRequest(sender, messageData);
+                }
+            }
+        });
+    }
+    else if (address && region) {
+        resTem.genRestaurantByRegion(region, pipeline.data[sender].restaurant.index, function (err, results) {
+            if (err) throw err;
+            else {
+                if (results.attachment.payload.elements.length > 1) {
+
+                    pipeline.data[sender].restaurant.index++;
+                    sendRequest(sender, results);
+                }
+                else {
+                    let messageData = {text: "Sorry, No more restaurants, select from the previous list"};
+                    sendRequest(sender, messageData);
+                }
+            }
+        });
+    }
+}
+
 
 function sendRequest(sender, messageData) {
     request({
@@ -77,6 +230,29 @@ function sendRequest(sender, messageData) {
         } else if (response.body.error) {
             console.log("response body error");
             console.log(response.body.error);
+        }
+    })
+}
+
+function sendRequestcall(sender, messageData, callback) {
+    request({
+        url: "https://graph.facebook.com/v2.6/me/messages",
+        qs: {access_token: PAGE_ACCESS_TOKEN},
+        method: "POST",
+        json: {
+            recipient: {id: sender},
+            message: messageData
+        }
+    }, function (err, response, body) {
+        if (err) {
+            console.log("sending error");
+            console.log(err);
+        } else if (response.body.error) {
+            console.log("response body error");
+            console.log(response.body.error);
+        }
+        else {
+            callback();
         }
     })
 }

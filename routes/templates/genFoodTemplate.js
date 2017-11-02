@@ -41,7 +41,7 @@ module.exports.findFoodByID = function (food_id, callback) {
         let food = {
           food_id: result._id,
           food_name: result.food_name,
-          quantity: 1,
+          quantity: 0,
           price: result.price,
           image_url:  "https://media-cdn.tripadvisor.com/media/photo-s/0a/56/44/5a/restaurant.jpg"
         };

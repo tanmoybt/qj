@@ -1,40 +1,75 @@
 const Restaurant = require('../../model/Restaurants');
 const Food = require('../../model/Foods');
 
-module.exports.genRestaurantByRegion = function (region, callback) {
+module.exports.genRestaurantByRegion = function (region, index, callback) {
     let perPage = 4;
-    let page = 0;
-    Restaurant.find({region : region})
-        .limit(perPage)
-        .skip(perPage * page)
-        .exec(function (err, restaurants) {
-            callback(err, makeTemplate(restaurants));
-        })
+    let page = index+1;
+    Restaurant.paginate({region : region}, { page: page, limit: perPage }, function(err, result) {
+        // result.docs
+        // result.total
+        // result.limit - 10
+        // result.page - 3
+        // result.pages
+        console.log(result.total);
+        if(result.total > (page)*perPage){
+            callback(err, makeTemplate(result.docs, true));
+        }
+        else {
+            callback(err, makeTemplate(result.docs, false));
+        }
+    });
 };
 
 module.exports.genRestaurantByZip = function (zip, callback) {
     let perPage = 4;
-    let page = 0;
-    Restaurant.find({zip_code : zip})
-        .limit(perPage)
-        .skip(perPage * page)
-        .exec(function (err, restaurants) {
-            callback(err, makeTemplate(restaurants));
-        })
+    let page = index;
+    Restaurant.paginate({zip_code : zip}, { page: page, limit: perPage }, function(err, result) {
+        // result.docs
+        // result.total
+        // result.limit - 10
+        // result.page - 3
+        // result.pages
+        console.log(result.total);
+        if(result.total > (page+1)*perPage){
+            callback(err, makeTemplate(result.docs, true));
+        }
+        else {
+            callback(err, makeTemplate(result.docs, false));
+        }
+    });
 };
 
 module.exports.genRestaurantByCuisine = function (cuisine, callback) {
     let perPage = 4;
-    let page = 0;
-    Restaurant.find({cuisine : cuisine})
-        .limit(perPage)
-        .skip(perPage * page)
-        .exec(function (err, restaurants) {
-            callback(err, makeTemplate(restaurants));
-        })
+    let page = index;
+    Restaurant.paginate({cuisine : cuisine}, { page: page, limit: perPage }, function(err, result) {
+        // result.docs
+        // result.total
+        // result.limit - 10
+        // result.page - 3
+        // result.pages
+        console.log(result.total);
+        if(result.total > (page+1)*perPage){
+            callback(err, makeTemplate(result.docs, true));
+        }
+        else {
+            callback(err, makeTemplate(result.docs, false));
+        }
+    });
+
 };
 
-function makeTemplate(restaurants) {
+function makeTemplate(restaurants, viewFlag) {
+    let view= [];
+    if (viewFlag){
+        view = [
+            {
+                "title": "View More",
+                "type": "postback",
+                "payload": "SEE_MORE"
+            }
+        ]
+    }
     if(!restaurants.size) {
         let messageElements = restaurants.map(restaurant => {
             return (
@@ -59,14 +94,7 @@ function makeTemplate(restaurants) {
                     "template_type": "list",
                     "top_element_style": "compact",
                     "elements": messageElements,
-                    "buttons":
-                        [
-                            {
-                                "title": "View More",
-                                "type": "postback",
-                                "payload": "SEE_MORE"
-                            }
-                        ]
+                    "buttons": view
                 }
             }
         }

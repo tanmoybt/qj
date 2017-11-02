@@ -1,6 +1,7 @@
 'use strict';
 
 const mongoose = require('mongoose');
+const mongoosePaginate = require('mongoose-paginate');
 const Schema = mongoose.Schema;
 
 
@@ -15,5 +16,7 @@ const FoodsSchema = new Schema({
     image: String,
     cuisine: String
 });
+
+FoodsSchema.plugin(mongoosePaginate);
 
 module.exports = mongoose.model('Foods', FoodsSchema);
