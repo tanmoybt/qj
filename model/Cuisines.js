@@ -8,5 +8,5 @@ const CuisineSchema = new Schema({
     image: String
 });
 
-module.exports = mongoose.model('Food_Tags', CuisineSchema);
+module.exports = mongoose.model('Cuisines', CuisineSchema);
 

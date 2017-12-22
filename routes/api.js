@@ -5,6 +5,10 @@ const apiRouter = express.Router();
 const Restaurant = require('../model/Restaurants');
 const Food = require('../model/Foods');
 
+const Cuisine = require('../model/Cuisines');
+const FoodTag = require('../model/Food_Tags');
+const IngredientTag = require('../model/Ingredients_Tags');
+
 apiRouter.route('/restaurants')
     .get(function(req, res) {
         Restaurant.find(function(err, restaurants) {
@@ -137,6 +141,69 @@ apiRouter.route('/foods/:food_id')
                 res.send(err);
             res.json({ message: 'food has been deleted' })
         })
+    });
+
+apiRouter.route('/cuisines')
+    .get(function(req, res) {
+        Cuisine.find(function(err, cuisines) {
+            if (err)
+                res.send(err);
+            res.json(cuisines);
+        });
+    })
+    .post(function(req, res) {
+        const cuisine = new Cuisine();
+        cuisine.cuisine = req.body.cuisine;
+
+        //console.log(Cuisine);
+
+        cuisine.save(function(err) {
+            if (err)
+                res.send(err);
+            res.json({ message: 'cuisine successfully added!' });
+        });
+    });
+
+apiRouter.route('/foodtags')
+    .get(function(req, res) {
+        FoodTag.find(function(err, foodtags) {
+            if (err)
+                res.send(err);
+            res.json(foodtags);
+        });
+    })
+    .post(function(req, res) {
+        const food_tag = new FoodTag();
+        food_tag.tag = req.body.tag;
+
+        //console.log(food_tag);
+
+        food_tag.save(function(err) {
+            if (err)
+                res.send(err);
+            res.json({ message: 'food tag successfully added!' });
+        });
+    });
+
+apiRouter.route('/ingredienttags')
+    .get(function(req, res) {
+        IngredientTag.find(function(err, ingredienttags) {
+            if (err)
+                res.send(err);
+            res.json(ingredienttags);
+        });
+    })
+    .post(function(req, res) {
+        const ingredient_tag = new IngredientTag();
+        ingredient_tag.tag = req.body.tag;
+
+        //console.log(ingredient_tag);
+
+        ingredient_tag.save(function(err) {
+            if (err)
+                res.send(err);
+            res.json({ message: 'ingredient successfully added!' });
+        });
     });
 
 
