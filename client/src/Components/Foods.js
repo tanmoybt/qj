@@ -4,6 +4,7 @@ import axios from 'axios';
 
 import FoodBox from './FoodBox';
 
+
 export default class Foods extends Component {
     constructor(props) {
         super(props);
@@ -28,6 +29,25 @@ export default class Foods extends Component {
         this.handleFoodDelete = this.handleFoodDelete.bind(this);
 
     }
+
+	componentDidMount() {
+  		window.fbAsyncInit = function() {
+		    window.FB.init({
+      			appId            : '1999649983639818',
+      			autoLogAppEvents : true,
+      			xfbml            : true,
+      			version          : 'v2.11'
+    		});
+  		};
+
+  		(function(d, s, id){
+     		var js, fjs = d.getElementsByTagName(s)[0];
+     		if (d.getElementById(id)) {return;}
+     		js = d.createElement(s); js.id = id;
+     		js.src = "https://connect.facebook.net/en_US/sdk.js";
+     		fjs.parentNode.insertBefore(js, fjs);
+   		}(document, 'script', 'facebook-jssdk'));
+	}
 
     handleFoodNameChange(e) {
         this.setState({food_name: e.target.value});
@@ -75,7 +95,7 @@ export default class Foods extends Component {
     handleFoodDelete(id) {
         axios.delete('api/foods/' + id)
             .then(res => {
-                
+
             })
             .catch(err => {
                 console.error(err);
@@ -83,7 +103,8 @@ export default class Foods extends Component {
     }
 
     render() {
-        let foodNodes = this.props.foods.map(food => {
+
+		let foodNodes = this.props.foods.map(food => {
             return (
                 <div key={food._id}>
                     <FoodBox food={food} onFoodDelete={this.handleFoodDelete}/>
@@ -131,6 +152,11 @@ export default class Foods extends Component {
 
                     <input type='submit' className="btn-success" value='ADD'/>
                 </form>
+
+				<div className="fb-customerchat"
+ 				   page_id="1971669279741137"
+					minimized="false">
+				</div>
 
             </div>
 

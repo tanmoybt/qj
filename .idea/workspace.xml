@@ -2,32 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9b5dc6b5-48e9-4608-ae71-a04c8b468051" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" afterPath="$PROJECT_DIR$/.gitignore" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/README.md" afterPath="$PROJECT_DIR$/README.md" />
-      <change beforePath="$PROJECT_DIR$/client/package-lock.json" afterPath="$PROJECT_DIR$/client/package-lock.json" />
-      <change beforePath="$PROJECT_DIR$/client/package.json" afterPath="$PROJECT_DIR$/client/package.json" />
-      <change beforePath="$PROJECT_DIR$/client/src/Components/FoodBox.js" afterPath="$PROJECT_DIR$/client/src/Components/FoodBox.js" />
       <change beforePath="$PROJECT_DIR$/client/src/Components/Foods.js" afterPath="$PROJECT_DIR$/client/src/Components/Foods.js" />
-      <change beforePath="$PROJECT_DIR$/client/src/Components/RestaurantBox.js" afterPath="$PROJECT_DIR$/client/src/Components/RestaurantBox.js" />
-      <change beforePath="$PROJECT_DIR$/client/src/Components/Restaurants.js" afterPath="$PROJECT_DIR$/client/src/Components/Restaurants.js" />
-      <change beforePath="$PROJECT_DIR$/index.js" afterPath="$PROJECT_DIR$/index.js" />
-      <change beforePath="$PROJECT_DIR$/model/Foods.js" afterPath="$PROJECT_DIR$/model/Foods.js" />
-      <change beforePath="$PROJECT_DIR$/model/Profiles.js" afterPath="$PROJECT_DIR$/model/Profiles.js" />
-      <change beforePath="$PROJECT_DIR$/model/Restaurants.js" afterPath="$PROJECT_DIR$/model/Restaurants.js" />
-      <change beforePath="$PROJECT_DIR$/routes/api.js" afterPath="$PROJECT_DIR$/routes/api.js" />
-      <change beforePath="$PROJECT_DIR$/routes/facebook/actions.js" afterPath="$PROJECT_DIR$/routes/facebook/actions.js" />
-      <change beforePath="$PROJECT_DIR$/routes/facebook/apiai.js" afterPath="$PROJECT_DIR$/routes/facebook/apiai.js" />
-      <change beforePath="$PROJECT_DIR$/routes/facebook/messages.js" afterPath="$PROJECT_DIR$/routes/facebook/messages.js" />
-      <change beforePath="$PROJECT_DIR$/routes/facebook/persistentMenu_gettingStarted.js" afterPath="$PROJECT_DIR$/routes/facebook/persistentMenu_gettingStarted.js" />
-      <change beforePath="$PROJECT_DIR$/routes/facebook/pipeline.js" afterPath="$PROJECT_DIR$/routes/facebook/pipeline.js" />
-      <change beforePath="$PROJECT_DIR$/routes/facebook/postbacks.js" afterPath="$PROJECT_DIR$/routes/facebook/postbacks.js" />
-      <change beforePath="$PROJECT_DIR$/routes/facebook/webhook.js" afterPath="$PROJECT_DIR$/routes/facebook/webhook.js" />
-      <change beforePath="$PROJECT_DIR$/routes/templates/genCartTemplate.js" afterPath="$PROJECT_DIR$/routes/templates/genCartTemplate.js" />
-      <change beforePath="$PROJECT_DIR$/routes/templates/genFoodTemplate.js" afterPath="$PROJECT_DIR$/routes/templates/genFoodTemplate.js" />
-      <change beforePath="$PROJECT_DIR$/routes/templates/genGetLocation.js" afterPath="$PROJECT_DIR$/routes/templates/genGetLocation.js" />
-      <change beforePath="$PROJECT_DIR$/routes/templates/genRestaurantTemplate.js" afterPath="$PROJECT_DIR$/routes/templates/genRestaurantTemplate.js" />
-      <change beforePath="$PROJECT_DIR$/routes/templates/genWhatToDo.js" afterPath="$PROJECT_DIR$/routes/templates/genWhatToDo.js" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -130,8 +105,8 @@
       <file leaf-file-name="genCartTemplate.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/routes/templates/genCartTemplate.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="68">
-              <caret line="8" column="61" lean-forward="false" selection-start-line="8" selection-start-column="61" selection-end-line="8" selection-end-column="61" />
+            <state relative-caret-position="561">
+              <caret line="37" column="44" lean-forward="true" selection-start-line="37" selection-start-column="44" selection-end-line="37" selection-end-column="44" />
               <folding />
             </state>
           </provider>
@@ -334,12 +309,12 @@
       <workItem from="1509446633778" duration="17775000" />
       <workItem from="1509532827737" duration="19748000" />
       <workItem from="1509622108967" duration="17451000" />
-      <workItem from="1513952963389" duration="235000" />
+      <workItem from="1513952963389" duration="519000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="151494000" />
+    <option name="totallyTimeSpent" value="151778000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -352,7 +327,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="55" y="-4" width="1311" height="772" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1655225" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -753,8 +727,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/routes/templates/genCartTemplate.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="8" column="61" lean-forward="false" selection-start-line="8" selection-start-column="61" selection-end-line="8" selection-end-column="61" />
+        <state relative-caret-position="561">
+          <caret line="37" column="44" lean-forward="true" selection-start-line="37" selection-start-column="44" selection-end-line="37" selection-end-column="44" />
           <folding />
         </state>
       </provider>
