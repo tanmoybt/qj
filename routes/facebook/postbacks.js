@@ -70,7 +70,7 @@ module.exports.postbackProcessor = function (sender, postback) {
             if (err) throw err;
             else {
                 //apiai.apiaiProcessor(sender, 'The restaurant ' + postback.payload+ ' is picked, traced to no action');
-                let messageData = {text: "I'm loading food menu for restaurant, Pick other restaurants and see their menu. " + postback.payload};
+                let messageData = {text: "I'm loading food menu for restaurant "  + postback.payload + ". Pick other restaurants and see their menu. "};
                 sendRequestcall(sender, messageData, function () {
                     sendRequest(sender, results);
                 });

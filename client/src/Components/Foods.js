@@ -75,7 +75,7 @@ export default class Foods extends Component {
     handleFoodDelete(id) {
         axios.delete('api/foods/' + id)
             .then(res => {
-                this.loadRestaurants();
+                
             })
             .catch(err => {
                 console.error(err);

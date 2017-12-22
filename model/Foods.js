@@ -8,7 +8,8 @@ const Schema = mongoose.Schema;
 const FoodsSchema = new Schema({
     res_id: Schema.Types.ObjectId,
     food_name: String,
-    food_type: String,
+    food_tags: [String],
+    ingredient_tags: [String],
     food_size: String,
     rating: Number,
     price: Number,

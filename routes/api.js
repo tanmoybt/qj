@@ -81,7 +81,19 @@ apiRouter.route('/restaurants/:restaurant_id')
         Restaurant.remove({ _id: req.params.restaurant_id }, function(err, restaurant) {
             if (err)
                 res.send(err);
-            res.json({ message: 'restaurant has been deleted' })
+            else {
+                Food.remove({ res_id: req.params.restaurant_id }, function(err, restaurant) {
+                    if (err)
+                    res.send(err);
+                    else {
+                
+                        res.json({ message: 'foods has been deleted' })
+                    }
+            
+                })
+                res.json({ message: 'restaurant has been deleted' })
+            }
+            
         })
     });
 

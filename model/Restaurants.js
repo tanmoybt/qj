@@ -10,10 +10,12 @@ const RestaurantsSchema = new Schema({
     location: String,
     region: String,
     zip_code: String,
-    cuisine: String,
+    cuisine: [String],
     rating: Number,
     logo: String,
-    image: String
+    image: String,
+    description: String,
+    offer: String
 });
 
 RestaurantsSchema.plugin(mongoosePaginate);

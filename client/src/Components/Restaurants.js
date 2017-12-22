@@ -14,10 +14,11 @@ export default class Restaurants extends Component {
             location: '',
             region: '',
             zipCode: '',
-            cuisine: '',
+            cuisine: [],
             rating: '',
             logo: '',
             image: '',
+            desc: '',
             restaurants: [],
             res_id: '',
             res_name: '',
@@ -30,6 +31,10 @@ export default class Restaurants extends Component {
         this.handlezipCodeChange = this.handlezipCodeChange.bind(this);
         this.handleCuisineChange = this.handleCuisineChange.bind(this);
         this.handleRatingChange = this.handleRatingChange.bind(this);
+        this.handleImageChange = this.handleImageChange.bind(this);
+        this.handleLogoChange = this.handleLogoChange.bind(this);
+        this.handleDescChange = this.handleDescChange.bind(this);
+
         this.handleRestaurantSubmit = this.handleRestaurantSubmit.bind(this);
         this.handleRestaurantDelete = this.handleRestaurantDelete.bind(this);
         this.loadRestaurants = this.loadRestaurants.bind(this);
@@ -57,6 +62,18 @@ export default class Restaurants extends Component {
     }
     handleRatingChange(e) {
         this.setState({rating: e.target.value});
+    }
+
+    handleImageChange(e) {
+        this.setState({image: e.target.value});
+    }
+
+    handleLogoChange(e) {
+        this.setState({logo: e.target.value});
+    }
+
+    handleDescChange(e) {
+        this.setState({desc: e.target.value});
     }
 
 
@@ -207,10 +224,10 @@ export default class Restaurants extends Component {
                             </div>
                             <div className="form-group">
                                 <label htmlFor="logo">Logo</label>
-                                <input type="file" className="form-control" id="logo"/>
+                                <input type="text" className="form-control" id="logo"/>
 
                                 <label htmlFor="image">Image</label>
-                                <input type="file" className="form-control" id="image"/>
+                                <input type="text" className="form-control" id="image"/>
                             </div>
 
                             <input type='submit' className="btn-success" value='ADD'/>

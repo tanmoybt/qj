@@ -19,6 +19,7 @@ module.exports.actionsProcessor= function (sender, action, speech, parameters, r
             sendPrevAction(sender);
         })
     }
+
     else if(action === 'restartBotConfirm'){
         pipeline.resetSenderData(sender);
         let messageData = {text : 'Bot has restarted, your order information is removed'};
@@ -27,6 +28,7 @@ module.exports.actionsProcessor= function (sender, action, speech, parameters, r
             sendRequest(sender, genWhat.genWhatToDo())
         });
     }
+
     else if(action === 'restartBot'){
         if(pipeline.data[sender]){
             let messageData= {text: speech};
@@ -40,6 +42,7 @@ module.exports.actionsProcessor= function (sender, action, speech, parameters, r
             })
         }
     }
+
     else if(action === 'setOrderGetLocation'){
         pipeline.setSenderData(sender);
         pipeline.data[sender].whattodo= 'ORDER';
@@ -49,32 +52,84 @@ module.exports.actionsProcessor= function (sender, action, speech, parameters, r
     }
 
     else if(action === 'setOrderShowOnRegionRestaurants'){
-        console.log(parameters.region);
-        let messageData = {text: "I'm loading restaurants from "+ parameters.region + "for you..."};
-        sendRequest(sender, messageData, function () {
-            resTem.genRestaurantByRegion(parameters.region, function (err, results) {
+        let messageData = {text: "I'm loading restaurants in "+ parameters.region + " for you..."};
+        sendRequestcall(sender, messageData, function () {
+            resTem.genRestaurantByRegion(parameters.region, 0, function (err, results) {
                 if (err) throw err;
                 else {
-                    console.log(JSON.stringify(results, null,2));
                     if (results.attachment.payload.elements.length > 1) {
                         pipeline.data[sender].location = {
                             region: parameters.region,
                             confirmed: false,
                             value: true
                         };
-                        sendRequest(sender, results, function () {
-                        });
+                        pipeline.data[sender].restaurant.index+=1;
+                        sendRequest(sender, results);
+                        setLastAction(sender, 'none', null, []);
                     }
                     else {
-                        messageData = {text: "Sorry, We've not started delivering in this area."};
-                        sendRequest(sender, messageData, function () {
-                            
+                        messageData = {text: "Sorry, I could not find"+ parameters.cuisine+ "restaurants"};
+                        sendRequestcall(sender, messageData, function () {
+                            sendRequest(sender, genLoc.genGetRegion());
                         });
                     }
                 }
             });
         })
     }
+
+    else if(action === 'showMenuOnRestaurant'){
+        setLastAction(sender, 'none', '', []);
+        foodTem.genFoodByRestaurant(parameters.restaurant_name, function (err, results) {
+            if (err) throw err;
+            else {
+                if(results.attachment.payload.elements.length > 0) {
+                    //apiai.apiaiProcessor(sender, 'The restaurant ' + postback.payload+ ' is picked, traced to no action');
+                    let messageData = {text: "I'm loading food menu for restaurant " + parameters.restaurant_name + ". Pick other restaurants and see their menu. "};
+                    sendRequestcall(sender, messageData, function () {
+                        sendRequest(sender, results);
+                    });
+                }
+                else {
+                    let messageData = {text: "Sorry, " + parameters.restaurant_name + " is not in our list yet, You could checkout other restaurants"};
+                    sendRequestcall(sender, messageData, function () {
+                        sendRequest(sender, genLoc.genGetLocation());
+                    });
+                }
+            }
+        });
+    }
+
+    else if(action === 'showRestaurantsOnCuisine'){
+        let messageData = {text: "I'm loading " + parameters.cuisine + " restaurants for you..."};
+        sendRequestcall(sender, messageData, function () {
+            resTem.genRestaurantByCuisine(parameters.cuisine,0, function (err, results) {
+                if (err) throw err;
+                else {
+                    if (results.attachment.payload.elements.length > 1) {
+                        pipeline.data[sender].restaurant.index+=1;
+                        sendRequest(sender, results);
+                        setLastAction(sender, 'none', null, []);
+                    }
+                    else {
+                        messageData = {text: "Sorry, I could not find "+ parameters.cuisine+ " restaurants"};
+                        sendRequestcall(sender, messageData, function () {
+                            sendRequest(sender, genLoc.genGetRegion());
+                        });
+                    }
+                }
+            });
+        })
+    }
+
+    else if(action === 'getFoodOnFood'){
+        const input = parameters.food_name;  // the input from your auto-complete box
+
+        foodTem.genFoodByFood(input, function (err, result) {
+            sendRequest(sender, result);
+        })
+    }
+
     else if(action === 'addFoodGetQuantity'){
         let speech = 'You were about to tell me how many ' + pipeline.data[sender].foodattending.food_name + ' you would like';
         setLastAction(sender, 'addFoodGetQuantity', speech, []);
@@ -91,6 +146,7 @@ module.exports.actionsProcessor= function (sender, action, speech, parameters, r
         let messageData= {text: qu +' '+ food.food_name + ' in your cart. You can view your cart for checkout or continue shopping.'};
         sendRequest(sender, messageData);
     }
+
     else if(action === 'addToCart.addToCart-cancel'){
         setLastAction(sender, 'none', '', []);
         let food = pipeline.data[sender].foodattending;
@@ -98,6 +154,7 @@ module.exports.actionsProcessor= function (sender, action, speech, parameters, r
         let messageData= {text: food.food_name + ' cancelled from order. You can view your cart for checkout or continue shopping.'};
         sendRequest(sender, messageData);
     }
+
     else if(action === 'changeAmountInCart.changeAmountInCart-selectnumber'){
         let qu = parameters.number[0];
         console.log(qu);
@@ -112,6 +169,7 @@ module.exports.actionsProcessor= function (sender, action, speech, parameters, r
         let messageData= {text: qu +' '+ food.food_name + ' in your cart. You can view your cart for checkout or continue shopping.'};
         sendRequest(sender, messageData);
     }
+
     else if(action === 'changeAmountInCart.changeAmountInCart-cancel'){
         setLastAction(sender, 'none', '', []);
         let food = pipeline.data[sender].foodattending;
@@ -119,6 +177,7 @@ module.exports.actionsProcessor= function (sender, action, speech, parameters, r
         let messageData= {text: food.food_name + ' kept in order. You can view your cart for checkout or continue shopping.'};
         sendRequest(sender, messageData);
     }
+
     else if(action === 'deliverylocationConfirm.deliverylocationConfirm-yes'){
         setLastAction(sender, 'none', '', []);
         pipeline.data[sender].location.confirmed = true;
@@ -127,11 +186,13 @@ module.exports.actionsProcessor= function (sender, action, speech, parameters, r
             sendRequest(sender, genCart.genConfirmOrder());
         });
     }
+
     else if(action === 'deliverylocationConfirm.deliverylocationConfirm-no'){
         setLastAction(sender, 'none', '', []);
         pipeline.data[sender].location.confirmed = false;
         sendRequest(sender, genLoc.genGetAddress());
     }
+
     else if(action === 'deliveryLocationNoGetAddress'){
         if(parameters.address){
             pipeline.data[sender].location.address = parameters.address;
@@ -145,13 +206,16 @@ module.exports.actionsProcessor= function (sender, action, speech, parameters, r
 
         }
     }
+
     else if(action === 'onCheckoutGotAddress'){
         pipeline.data[sender].location.address = resolvedQuery;
         pipeline.data[sender].location.confirmed = true;
         let messageData = {text: 'What is the best phone number to reach you? '};
+        setLastAction(sender, 'getPhoneNumber', 'Sorry, could you repeat the phone number?', []);
         sendRequest(sender, messageData);
         apiai.apiaiProcessor(sender, messageData.text);
     }
+
     else if(action === 'deliverySetPhoneNumber'){
         pipeline.data[sender].phone = parameters.phonenumber;
         sendRequestcall(sender, genCart.genCart(sender), function () {
@@ -181,6 +245,9 @@ function sendPrevAction(sender){
                 sendRequest(sender, genLoc.genGetLocation(), function () {});
             }
             else if(action === 'addFoodGetQuantity'){
+                sendRequest(sender, {text: speech});
+            }
+            else if(action === 'getPhoneNumber'){
                 sendRequest(sender, {text: speech});
             }
         }
