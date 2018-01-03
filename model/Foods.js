@@ -10,12 +10,15 @@ const FoodsSchema = new Schema({
     food_name: String,
     food_tags: [String],
     ingredient_tags: [String],
-    food_size: String,
+    food_size: [{
+        size: String,
+        price: Number
+    }],
     rating: Number,
     price: Number,
     index: Number,
     image: String,
-    cuisine: String
+    cuisine: [String]
 });
 
 FoodsSchema.plugin(mongoosePaginate);

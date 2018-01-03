@@ -5,10 +5,10 @@ import axios from 'axios';
 import Select from 'react-select';
 import 'react-select/dist/react-select.css';
 
-
 import RestaurantBox from './RestaurantBox';
 import Foods from './Foods';
-import Info from './info'
+import Info from './info';
+import Region from './Region';
 
 export default class Restaurants extends Component {
     constructor(props) {
@@ -30,7 +30,8 @@ export default class Restaurants extends Component {
             cuisines: [],
             food_tags: [],
             ingredient_tags: [],
-            selectedOption: 'chocolate',
+
+            regions: [],
 
 
             removeSelected: true,
@@ -39,6 +40,15 @@ export default class Restaurants extends Component {
             stayOpen: false,
             value: [],
             rtl: false,
+            option_cuisine: '',
+
+            removeSelected_r: true,
+            disabled_r: false,
+            crazy_r: false,
+            stayOpen_r: false,
+            value_r: [],
+            rtl_r: false,
+            option_region: ''
         };
 
         this.handleNameChange = this.handleNameChange.bind(this);
@@ -62,17 +72,32 @@ export default class Restaurants extends Component {
         this.handleFoodSubmit = this.handleFoodSubmit.bind(this);
 
         this.loadCuisines = this.loadCuisines.bind(this);
+        this.loadRegions = this.loadRegions.bind(this);
         this.loadFoodTags = this.loadFoodTags.bind(this);
         this.loadIngredientTags = this.loadIngredientTags.bind(this);
+        this.handleRegionSubmit = this.handleRegionSubmit.bind(this);
 
-        this.handleChange = this.handleChange.bind(this);
-
+        this.handleCuisineChange = this.handleCuisineChange.bind(this);
+        this.handleRegionChange = this.handleRegionChange.bind(this);
 
     }
 
-    handleChange(selectedOption) {
+    handleCuisineChange(selectedOption) {
         //console.log(selectedOption);
-        this.setState({selectedOption: selectedOption});
+        this.setState({option_cuisine: selectedOption});
+    }
+
+    handleRegionChange(selectedOption) {
+        //console.log(selectedOption);
+        let zip= '';
+        this.state.regions.forEach(function (reg) {
+            console.log(reg);
+            console.log(selectedOption);
+           if(reg.name === selectedOption){
+               zip= reg.zip_code;
+           }
+        });
+        this.setState({option_region: selectedOption, zipCode: zip});
     }
 
     handleNameChange(e) {
@@ -81,27 +106,18 @@ export default class Restaurants extends Component {
     handleLocationChange(e) {
         this.setState({location: e.target.value});
     }
-    handleRegionChange(e) {
-        this.setState({region: e.target.value});
-    }
     handlezipCodeChange(e) {
         this.setState({zipCode: e.target.value});
-    }
-    handleCuisineChange(e) {
-        this.setState({cuisine: e.target.value});
     }
     handleRatingChange(e) {
         this.setState({rating: e.target.value});
     }
-
     handleImageChange(e) {
         this.setState({image: e.target.value});
     }
-
     handleLogoChange(e) {
         this.setState({logo: e.target.value});
     }
-
     handleDescChange(e) {
         this.setState({desc: e.target.value});
     }
@@ -112,18 +128,21 @@ export default class Restaurants extends Component {
         this.loadCuisines();
         this.loadFoodTags();
         this.loadIngredientTags();
+        this.loadRegions();
     }
 
     loadRestaurants() {
         const that= this;
         axios.get('/api/restaurants')
             .then(response => {
-                if(response.data){
+                console.log("data");
+                console.log(response.data);
+
+                if(response.data.length){
                     this.setState({restaurants: response.data, res_id: response.data[0]._id, res_name: response.data[0].name}, function(){
                         that.loadFoods();
                     });
                 }
-                
 
             })
             .catch(function (error) {
@@ -173,6 +192,16 @@ export default class Restaurants extends Component {
             })
     }
 
+    loadRegions() {
+        axios.get('/api/regions')
+            .then(response => {
+                this.setState({regions: response.data});
+            })
+            .catch(function (error) {
+                console.log(error);
+            })
+    }
+
     handleFoodSubmit(food){
         let foods = this.state.foods;
         let newFoods = foods.concat([food]);
@@ -192,9 +221,9 @@ export default class Restaurants extends Component {
         e.preventDefault();
         let name = this.state.name.trim();
         let location = this.state.location.trim();
-        let region = this.state.region.trim();
+        let region = this.state.option_region.trim();
         let zip = this.state.zipCode.trim();
-        let cuisine = this.state.cuisine.trim();
+        let cuisine = this.state.option_cuisine.trim();
         let rating = this.state.rating.trim();
         if (!name || !location) {
             return;
@@ -203,7 +232,10 @@ export default class Restaurants extends Component {
         let restaurant = {_id: name, name: name, location: location, region: region,
                             zip: zip, cuisine: cuisine, rating: rating};
 
-        let newRestaurants = restaurants.concat([restaurant]);
+        let restaurantSplit = {_id: name, name: name, location: location, region: region,
+            zip_code: zip, cuisine: cuisine.split(","), rating: rating};
+
+        let newRestaurants = restaurants.concat([restaurantSplit]);
         this.setState({restaurants: newRestaurants}, function () {
             console.log(this.state.restaurants);
         });
@@ -260,6 +292,24 @@ export default class Restaurants extends Component {
             });
     }
 
+    handleRegionSubmit(reg) {
+        let regions = this.state.regions;
+        let newReg= reg;
+        newReg.sub_zip_codes = reg.zip_codes.split(",");
+        newReg.sub_regions = reg.sub_reg.split(",");
+
+        let newRegions = regions.concat([newReg]);
+        this.setState({regions: newRegions}, function () {
+            console.log(this.state.regions);
+        });
+
+        axios.post('/api/regions', reg)
+            .catch(err => {
+                console.error(err);
+                this.setState({regions: regions});
+            });
+    }
+
 
     handleRestaurantDelete(id) {
         axios.delete('api/restaurants/' + id)
@@ -289,10 +339,16 @@ export default class Restaurants extends Component {
             )
         });
 
-        const FLAVOURS  = [];
+        const CUISINES = [];
 
         this.state.cuisines.forEach(function (cuisine) {
-           FLAVOURS.push({label: cuisine.cuisine, value: cuisine.cuisine});
+           CUISINES.push({label: cuisine.cuisine, value: cuisine.cuisine});
+        });
+
+        const REGIONS = [];
+
+        this.state.regions.forEach(function (region) {
+            REGIONS.push({label: region.name, value: region.name});
         });
 
         return (
@@ -320,8 +376,19 @@ export default class Restaurants extends Component {
                             </div>
                             <div>
                                 <label htmlFor="region">Region:</label>
-                                <input type="text" className="form-control" value={this.state.region}
-                                       onChange={this.handleRegionChange} id="region"/>
+                                <Select
+                                    id="region"
+                                    closeOnSelect={!this.state.stayOpen_r}
+                                    disabled={this.state.disabled_r}
+                                    multi
+                                    onChange={this.handleRegionChange}
+                                    options={REGIONS}
+                                    placeholder="Select Region"
+                                    removeSelected={this.state.removeSelected_r}
+                                    rtl={this.state.rtl_r}
+                                    simpleValue
+                                    value={this.state.option_region}
+                                />
 
                                 <label htmlFor="zip">ZIP Code</label>
                                 <input type="text" className="form-control" value={this.state.zipCode}
@@ -329,20 +396,18 @@ export default class Restaurants extends Component {
                             </div>
                             <div className="form-group">
                                 <label htmlFor="cuisine">Cuisine</label>
-                                <input type="text" className="form-control" value={this.state.cuisine}
-                                       onChange={this.handleCuisineChange} id="cuisine"/>
-
                                 <Select
+                                    id="cuisine"
                                     closeOnSelect={!this.state.stayOpen}
                                     disabled={this.state.disabled}
                                     multi
-                                    onChange={this.handleChange}
-                                    options={FLAVOURS}
-                                    placeholder="Select your favourite(s)"
+                                    onChange={this.handleCuisineChange}
+                                    options={CUISINES}
+                                    placeholder="Select Cuisines"
                                     removeSelected={this.state.removeSelected}
                                     rtl={this.state.rtl}
                                     simpleValue
-                                    value={this.state.selectedOption}
+                                    value={this.state.option_cuisine}
                                 />
 
                                 <label htmlFor="rating">Rating</label>
@@ -367,10 +432,19 @@ export default class Restaurants extends Component {
                                 handleCuisine={this.handleCuisineSubmit}
                                 handleFoodTag={this.handleFoodTagSubmit}
                                 handleIngredientTag={this.handleIngredientTagSubmit}/>
+
+                        <br/>
+                        <br/>
+
+                        <Region regions={this.state.regions} handleRegion={this.handleRegionSubmit}/>
+                        <br/>
+                        <br/>
+
                     </div>
                     <div className="col-md-6">
                         <h2>{this.state.res_name}</h2>
                         <Foods foods={this.state.foods} res_id={this.state.res_id} handleFoodSubmit={this.handleFoodSubmit}/>
+
                     </div>
                 </div>
             </div>

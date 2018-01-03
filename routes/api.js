@@ -8,6 +8,7 @@ const Food = require('../model/Foods');
 const Cuisine = require('../model/Cuisines');
 const FoodTag = require('../model/Food_Tags');
 const IngredientTag = require('../model/Ingredients_Tags');
+const Regions = require('../model/Regions');
 
 apiRouter.route('/restaurants')
     .get(function(req, res) {
@@ -23,7 +24,7 @@ apiRouter.route('/restaurants')
         restaurant.location = req.body.location;
         restaurant.region= req.body.region;
         restaurant.zip_code= req.body.zip;
-        restaurant.cuisine= req.body.cuisine;
+        restaurant.cuisine= req.body.cuisine.split(",");
         restaurant.rating= req.body.rating;
 
         console.log(restaurant);
@@ -182,6 +183,33 @@ apiRouter.route('/foodtags')
             if (err)
                 res.send(err);
             res.json({ message: 'food tag successfully added!' });
+        });
+    });
+
+apiRouter.route('/regions')
+    .get(function(req, res) {
+        Regions.find(function(err, regions) {
+            if (err)
+                res.send(err);
+            res.json(regions);
+        });
+    })
+    .post(function(req, res) {
+        const region = new Regions();
+        region.name = req.body.name;
+        region.zip_code = req.body.zip_code;
+        let zips= req.body.zip_codes;
+        region.sub_zip_codes = zips.split(",");
+        let regions = req.body.sub_reg;
+        //console.log(req.body.sub_regions);
+        region.sub_regions = regions.split(",");
+
+        //console.log(food_tag);
+
+        region.save(function(err) {
+            if (err)
+                res.send(err);
+            res.json({ message: 'region successfully added!' });
         });
     });
 
