@@ -95,7 +95,7 @@ apiRouter.route('/restaurants/:restaurant_id')
                         res.json({ message: 'foods has been deleted' })
                     }
             
-                })
+                });
                 res.json({ message: 'restaurant has been deleted' })
             }
             
@@ -118,11 +118,14 @@ apiRouter.route('/foods')
         const food = new Food();
         food.res_id = req.body.res_id;
         food.food_name = req.body.food_name;
-        food.food_type = req.body.food_type;
+        food.food_tags = req.body.food_tags;
+        food.ingredient_tags = req.body.ingredient_tags;
         food.food_size= req.body.food_size;
-        food.price= req.body.price;
         food.cuisine= req.body.cuisine;
         food.rating= req.body.rating;
+        food.image= req.body.image;
+
+        console.log(food.res_id);
 
         console.log(food);
 
@@ -235,5 +238,46 @@ apiRouter.route('/ingredienttags')
     });
 
 
+apiRouter.route('/gendata')
+    .get(function(req, res) {
+        Restaurant.find(function(err, restaurants) {
+            if (err)
+                res.send(err);
+            else {
+                Regions.find(function (err, regions) {
+                    if (err)
+                        res.send(err);
+                    else {
+                        Cuisine.find(function (err, cuisines) {
+                            if (err)
+                                res.send(err);
+                            else {
+                                FoodTag.find(function (err, foodTags) {
+                                    if (err)
+                                        res.send(err);
+                                    else {
+                                        IngredientTag.find(function (err, ingTags) {
+                                            if (err)
+                                                res.send(err);
+                                            else {
+                                                let data = {
+                                                    res: restaurants,
+                                                    reg: regions,
+                                                    cui: cuisines,
+                                                    foodTags: foodTags,
+                                                    ingTags: ingTags
+                                                };
+                                                res.json(data);
+                                            }
+                                        })
+                                    }
+                                })
+                            }
+                        })
+                    }
+                })
+            }
+        });
+    });
 
 module.exports = apiRouter;

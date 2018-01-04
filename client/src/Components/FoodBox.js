@@ -17,12 +17,21 @@ export default class FoodBox extends Component {
     }
 
     render() {
+        let sizes = this.props.food.food_size.map(size => {
+            return (
+                <div key={size.price}>
+                    <h5> -- {size.size}, <strong>{size.price} tk</strong></h5>
+                </div>
+            )
+        });
+
         return (
             <div>
                 <h3>{this.props.food.food_name}</h3>
-                <h4>Type: {this.props.food.food_type}</h4>
-                <h5>Size: {this.props.food.food_size}, Price : {this.props.food.price}tk,
-                    Cuisine: {this.props.food.cuisine}, Rating : {this.props.food.rating}</h5>
+                <h5>Food Tags: <strong>{this.props.food.food_tags.join()}</strong>; Ingredient Tags:<strong>
+                    {this.props.food.ingredient_tags.join()}</strong></h5>
+                {sizes}
+                <h6> Cuisine: {this.props.food.cuisine.join()}, Rating : {this.props.food.rating}</h6>
 
                 <button className="btn btn-large btn-danger" onClick={this.handleFoodDelete}>Delete</button>
             </div>

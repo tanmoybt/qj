@@ -125,10 +125,11 @@ export default class Restaurants extends Component {
 
     componentDidMount() {
         this.loadRestaurants();
-        this.loadCuisines();
-        this.loadFoodTags();
-        this.loadIngredientTags();
         this.loadRegions();
+        this.loadCuisines();
+        this.loadIngredientTags();
+        this.loadFoodTags();
+
     }
 
     loadRestaurants() {
@@ -215,6 +216,22 @@ export default class Restaurants extends Component {
                 this.setState({foods: foods});
             });
 
+    }
+
+    handleFoodDelete(id){
+        let foodloads= this.state.foods;
+        let i=0;
+        let index=-1;
+        foodloads.forEach(function (food) {
+            if(food._id === id){
+                index=i;
+            }
+            i++;
+        });
+        foodloads.splice(index, 1);
+        this.setState({
+            foods: foodloads
+        })
     }
 
     handleRestaurantSubmit(e) {
@@ -351,6 +368,18 @@ export default class Restaurants extends Component {
             REGIONS.push({label: region.name, value: region.name});
         });
 
+        let food_module = <div className="col-md-6"></div>
+
+        if(this.state.res_id && this.state.res_name){
+            food_module =   <div className="col-md-6">
+                                <h2>{this.state.res_name}</h2>
+                                <Foods foods={this.state.foods} res_id={this.state.res_id}
+                                    handleFoodSubmit={this.handleFoodSubmit}
+                                    food_tags={this.state.food_tags} ing_tags={this.state.ingredient_tags}
+                                    cuisines={this.state.cuisines}/>
+                            </div>
+        }
+
         return (
             <div className="container-fluid">
                 <div className="row">
@@ -416,10 +445,10 @@ export default class Restaurants extends Component {
                             </div>
                             <div className="form-group">
                                 <label htmlFor="logo">Logo</label>
-                                <input type="text" className="form-control" id="logo"/>
+                                <input onChange={this.handleImageChange} type="text" className="form-control" id="logo"/>
 
                                 <label htmlFor="image">Image</label>
-                                <input type="text" className="form-control" id="image"/>
+                                <input onChange={this.handleLogoChange} type="text" className="form-control" id="image"/>
                             </div>
 
                             <input type='submit' className="btn-success" value='ADD'/>
@@ -441,11 +470,8 @@ export default class Restaurants extends Component {
                         <br/>
 
                     </div>
-                    <div className="col-md-6">
-                        <h2>{this.state.res_name}</h2>
-                        <Foods foods={this.state.foods} res_id={this.state.res_id} handleFoodSubmit={this.handleFoodSubmit}/>
+                    {food_module}
 
-                    </div>
                 </div>
             </div>
         )

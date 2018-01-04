@@ -2,7 +2,11 @@
 import React, {Component} from 'react';
 import axios from 'axios';
 
+import Select from 'react-select';
+import 'react-select/dist/react-select.css';
+
 import FoodBox from './FoodBox';
+import FoodSize from "./FoodSize";
 
 
 export default class Foods extends Component {
@@ -18,7 +22,31 @@ export default class Foods extends Component {
             }],
             cuisine: '',
             rating: '',
-            image: ''
+            image: '',
+
+            removeSelected_f: true,
+            disabled_f: false,
+            crazy_f: false,
+            stayOpen_f: false,
+            value_f: [],
+            rtl_f: false,
+            option_food: '',
+
+            removeSelected_i: true,
+            disabled_i: false,
+            crazy_i: false,
+            stayOpen_i: false,
+            value_i: [],
+            rtl_i: false,
+            option_ing: '',
+
+            removeSelected_c: true,
+            disabled_c: false,
+            crazy_c: false,
+            stayOpen_c: false,
+            value_c: [],
+            rtl_c: false,
+            option_cuisine: '',
 
         };
 
@@ -27,11 +55,14 @@ export default class Foods extends Component {
         this.handleFoodSizeChange = this.handleFoodSizeChange.bind(this);
         this.handlePriceChange = this.handlePriceChange.bind(this);
         this.handleCuisineChange = this.handleCuisineChange.bind(this);
+        this.handleFoodTagChange = this.handleFoodTagChange.bind(this);
+        this.handleIngTagChange = this.handleIngTagChange.bind(this);
         this.handleRatingChange = this.handleRatingChange.bind(this);
+        this.handleImageChange = this.handleImageChange.bind(this);
         this.handleFoodSubmit = this.handleFoodSubmit.bind(this);
         this.handleFoodDelete = this.handleFoodDelete.bind(this);
         this.addSizeFields = this.addSizeFields.bind(this);
-
+        this.deleteSize = this.deleteSize.bind(this);
 
     }
 
@@ -62,51 +93,75 @@ export default class Foods extends Component {
         this.setState({food_type: e.target.value});
     }
 
-    handleFoodSizeChange(i, e) {
+    handleFoodSizeChange(i, val) {
         console.log(i);
 
         let foods= this.state.food_size;
-        foods[i].size = e.target.value;
+        foods[i].size = val;
 
         this.setState({food_size: foods});
     }
 
-    handlePriceChange(i, e) {
+    handlePriceChange(i, val) {
         console.log(i);
         let foods= this.state.food_size;
-        foods[i].price = e.target.value;
+        foods[i].price = val;
 
         this.setState({food_size: foods});
     }
 
-    handleCuisineChange(e) {
-        this.setState({cuisine: e.target.value});
+    handleCuisineChange(selectedOption) {
+        console.log(selectedOption);
+        this.setState({option_cuisine: selectedOption});
+    }
+
+    handleFoodTagChange(selectedOption) {
+        console.log(selectedOption);
+        this.setState({option_food: selectedOption});
+    }
+
+    handleIngTagChange(selectedOption) {
+        console.log(selectedOption);
+        this.setState({option_ing: selectedOption});
     }
 
     handleRatingChange(e) {
         this.setState({rating: e.target.value});
     }
 
+    handleImageChange(e) {
+        this.setState({image: e.target.value});
+    }
+
     handleFoodSubmit(e) {
         e.preventDefault();
         let food_name = this.state.food_name.trim();
-        let food_type = this.state.food_type.trim();
-        let food_size = this.state.food_size.trim();
-        let price = this.state.price.trim();
-        let cuisine = this.state.cuisine.trim();
+        let food_sizes = this.state.food_size;
+
+        let cuisine = this.state.option_cuisine.split(",");
+        let food_tags = this.state.option_food.split(",");
+        let ing_tags = this.state.option_ing.split(",");
+
         let rating = this.state.rating.trim();
-        if (!food_name || !price) {
+        let image = this.state.image;
+
+        if (!food_name || !food_sizes[0].price) {
             return;
         }
+        let res = 1;
+        if(this.props.res_id) res=this.props.res_id;
+
+        console.log(res);
         let food = {
-            _id: food_name, res_id: this.props.res_id, food_name: food_name, food_type: food_type, food_size: food_size,
-            price: price, cuisine: cuisine, rating: rating
+            _id:food_name, res_id: res, food_name: food_name, food_tags: food_tags, ingredient_tags:ing_tags,
+            food_size: food_sizes, cuisine: cuisine, rating: rating, image:image
         };
 
         this.props.handleFoodSubmit(food);
     }
 
     handleFoodDelete(id) {
+
         axios.delete('api/foods/' + id)
             .then(res => {
 
@@ -123,8 +178,16 @@ export default class Foods extends Component {
         this.setState({food_size: newFoods});
     }
 
-    render() {
+    deleteSize(i) {
+        console.log(i);
+        let foods= this.state.food_size;
 
+        let fruits = foods;
+        fruits.splice(i, 1);
+        this.setState({food_size: fruits});
+    }
+
+    render() {
         let foodNodes = this.props.foods.map(food => {
             return (
                 <div key={food._id}>
@@ -139,30 +202,29 @@ export default class Foods extends Component {
         let size = this.state.food_size.map(function (size) {
             i++;
             return (
-                <div key={i} className="row">
-
-
-                    <div className="col-md-6">
-                        <label htmlFor={"size" + i}>Food Size</label>
-                        <input type="text" className="form-control" value={that.state.food_size[i].size}
-                               onChange={(e) => that.handleFoodSizeChange(i, e)} id={"size" + i}/>
-
-                        <label htmlFor={"price" + i}>Price</label>
-                        <input type="text" className="form-control" value={that.state.food_size[i].price}
-                               onChange={(e) => that.handlePriceChange(i, e)} id={"price" + i}/>
-
-                    </div>
-                    <div className="col-md-6">
-
-                    </div>
-                </div>
-
+                <FoodSize key={i} food_size={that.state.food_size[i].size} price={that.state.food_size[i].price}
+                changeSize={that.handleFoodSizeChange} changePrice={that.handlePriceChange}
+                index={i} deleteSize={that.deleteSize}/>
             )
         });
 
-        // size += (
-        //     <input type="button" className="btn btn-success" onClick={this.addSizeFields}/>
-        // );
+        const CUISINES = [];
+
+        this.props.cuisines.forEach(function (cuisine) {
+            CUISINES.push({label: cuisine.cuisine, value: cuisine.cuisine});
+        });
+
+        const FOOD_TAGS = [];
+
+        this.props.food_tags.forEach(function (tag) {
+            FOOD_TAGS.push({label: tag.tag, value: tag.tag});
+        });
+
+        const ING_TAGS = [];
+
+        this.props.ing_tags.forEach(function (tag) {
+            ING_TAGS.push({label: tag.tag, value: tag.tag});
+        });
 
         return (
             <div className="col-md-8">
@@ -173,16 +235,55 @@ export default class Foods extends Component {
                     <input type="text" className="form-control" value={this.state.food_name}
                            onChange={this.handleFoodNameChange} id="name"/>
 
-                    <label htmlFor="type">Food Type:</label>
-                    <input type="text" className="form-control" value={this.state.food_type}
-                           onChange={this.handleFoodTypeChange} id="type"/>
+                    <label htmlFor="food_tag">Food Tags:</label>
+                    <Select
+                        id="food_tag"
+                        closeOnSelect={!this.state.stayOpen_f}
+                        disabled={this.state.disabled_f}
+                        multi
+                        onChange={this.handleFoodTagChange}
+                        options={FOOD_TAGS}
+                        placeholder="Select Food Tag"
+                        removeSelected={this.state.removeSelected_f}
+                        rtl={this.state.rtl_f}
+                        simpleValue
+                        value={this.state.option_food}
+                        />
+
+                    <label htmlFor="ing_tag">Ingredient Tags:</label>
+                    <Select
+                        id="ing_tag"
+                        closeOnSelect={!this.state.stayOpen_i}
+                        disabled={this.state.disabled_i}
+                        multi
+                        onChange={this.handleIngTagChange}
+                        options={ING_TAGS}
+                        placeholder="Select Ingredient Tag"
+                        removeSelected={this.state.removeSelected_i}
+                        rtl={this.state.rtl_i}
+                        simpleValue
+                        value={this.state.option_ing}
+                        />
+
+                    <label htmlFor="cui">Cuisines:</label>
+                    <Select
+                        id="cui"
+                        closeOnSelect={!this.state.stayOpen_c}
+                        disabled={this.state.disabled_c}
+                        multi
+                        onChange={this.handleCuisineChange}
+                        options={CUISINES}
+                        placeholder="Select Cuisine"
+                        removeSelected={this.state.removeSelected_c}
+                        rtl={this.state.rtl_c}
+                        simpleValue
+                        value={this.state.option_cuisine}
+                    />
                 </div>
                 {size}
+                <br/>
                 <button className="btn-success" onClick={this.addSizeFields}>ADD SIZE</button>
                 <div className="form-group">
-                    <label htmlFor="cuisine">Cuisine</label>
-                    <input type="text" className="form-control" value={this.state.cuisine}
-                           onChange={this.handleCuisineChange} id="cuisine"/>
 
                     <label htmlFor="rating">Rating</label>
                     <input type="text" className="form-control" value={this.state.rating}
@@ -190,7 +291,7 @@ export default class Foods extends Component {
                 </div>
                 <div className="form-group">
                     <label htmlFor="image">Image</label>
-                    <input type="file" className="form-control" id="image"/>
+                    <input onChange={this.handleImageChange} type="text" className="form-control" id="image"/>
                 </div>
 
                 <input type='submit' onClick={this.handleFoodSubmit} className="btn-success" value='ADD'/>

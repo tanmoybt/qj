@@ -27,7 +27,7 @@ export default class RestaurantBox extends Component {
                 <div>
                     <h3>{this.props.restaurant.name}</h3>
                     <h4>{this.props.restaurant.location}</h4>
-                    <h5>Region: {this.props.restaurant.region}, ZIP code: {this.props.restaurant.zip_code},
+                    <h5>Region: <strong>{this.props.restaurant.region}</strong>, ZIP code: {this.props.restaurant.zip_code},
                         Cuisine: {this.props.restaurant.cuisine.join()}, Rating {this.props.restaurant.rating}</h5>
 
                     <button className="btn btn-large btn-success" onClick={this.handleDisplayClick}>Display</button>

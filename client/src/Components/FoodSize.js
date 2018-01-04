@@ -11,41 +11,49 @@ export default class FoodSize extends Component {
             price: ''
         };
 
-        this.handleSizeSubmit = this.handleSizeSubmit.bind(this);
+        this.handleFoodSizeChange = this.handleFoodSizeChange.bind(this);
+        this.handlePriceChange = this.handlePriceChange.bind(this);
+        this.deleteSize = this.deleteSize.bind(this);
 
     }
 
     handleFoodSizeChange(e) {
-        this.setState({name: e.target.value});
+        this.props.changeSize(this.props.index, e.target.value);
     }
 
     handlePriceChange(e) {
-        this.setState({zip_code: e.target.value});
+        this.props.changePrice(this.props.index, e.target.value);
     }
 
-
-    handleSizeSubmit(e) {
-        e.preventDefault();
-
+    deleteSize(e){
+        this.props.deleteSize(this.props.index);
     }
 
     render() {
+        let deleteItem=
+            <div className="col-md-4">
+
+            </div>;
+        if(this.props.index){
+            deleteItem =
+                <div className="col-md-4">
+                    <br/>
+                    <button className="btn-danger" onClick={this.deleteSize}>remove</button>
+                </div>;
+        }
         return (
-            <div>
-                <form onSubmit={this.handleSizeSubmit}>
-                    <div>
-                        <label htmlFor="size">Food Size</label>
-                        <input type="text" className="form-control" value={this.state.food_size}
-                               onChange={this.handleFoodSizeChange} id="size" />
+            <div className="row">
+                <div className="col-md-8">
+                    <label htmlFor="size">Food Size</label>
+                    <input type="text" className="form-control" value={this.props.food_size}
+                           onChange={this.handleFoodSizeChange} id="size"/>
 
-                        <label htmlFor="price">Price</label>
-                        <input type="text" className="form-control" value={this.state.price}
-                               onChange={this.handlePriceChange} id="price"/>
+                    <label htmlFor="price">Price</label>
+                    <input type="text" className="form-control" value={this.props.price}
+                           onChange={this.handlePriceChange} id="price"/>
 
-                        <input type='submit' className="btn-success" value='ADD'/>
-
-                    </div>
-                </form>
+                </div>
+                {deleteItem}
             </div>
         )
     }
