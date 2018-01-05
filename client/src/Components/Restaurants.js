@@ -91,13 +91,13 @@ export default class Restaurants extends Component {
         //console.log(selectedOption);
         let zip= '';
         this.state.regions.forEach(function (reg) {
-            console.log(reg);
-            console.log(selectedOption);
-           if(reg.name === selectedOption){
+            //console.log(reg);
+            //console.log(selectedOption);
+           if(reg.name === selectedOption.label){
                zip= reg.zip_code;
            }
         });
-        this.setState({option_region: selectedOption, zipCode: zip});
+        this.setState({option_region: selectedOption.label, zipCode: zip});
     }
 
     handleNameChange(e) {
@@ -138,6 +138,8 @@ export default class Restaurants extends Component {
             .then(response => {
                 console.log("data");
                 console.log(response.data);
+
+                this.setState({restaurants: []});
 
                 if(response.data.length){
                     this.setState({restaurants: response.data, res_id: response.data[0]._id, res_name: response.data[0].name}, function(){
@@ -204,34 +206,18 @@ export default class Restaurants extends Component {
     }
 
     handleFoodSubmit(food){
-        let foods = this.state.foods;
-        let newFoods = foods.concat([food]);
-        this.setState({foods: newFoods}, function () {
-            console.log(this.state.foods);
-        });
-
         axios.post('/api/foods', food)
             .catch(err => {
                 console.error(err);
-                this.setState({foods: foods});
-            });
+            })
+            .then(doc => {
+                let foods = this.state.foods;
+                let newFoods = foods.concat([doc.data]);
+                this.setState({foods: newFoods}, function () {
+                    console.log(this.state.foods);
+                });
+            })
 
-    }
-
-    handleFoodDelete(id){
-        let foodloads= this.state.foods;
-        let i=0;
-        let index=-1;
-        foodloads.forEach(function (food) {
-            if(food._id === id){
-                index=i;
-            }
-            i++;
-        });
-        foodloads.splice(index, 1);
-        this.setState({
-            foods: foodloads
-        })
     }
 
     handleRestaurantSubmit(e) {
@@ -245,92 +231,94 @@ export default class Restaurants extends Component {
         if (!name || !location) {
             return;
         }
-        let restaurants = this.state.restaurants;
-        let restaurant = {_id: name, name: name, location: location, region: region,
+        let restaurant = {name: name, location: location, region: region,
                             zip: zip, cuisine: cuisine, rating: rating};
-
-        let restaurantSplit = {_id: name, name: name, location: location, region: region,
-            zip_code: zip, cuisine: cuisine.split(","), rating: rating};
-
-        let newRestaurants = restaurants.concat([restaurantSplit]);
-        this.setState({restaurants: newRestaurants}, function () {
-            console.log(this.state.restaurants);
-        });
 
         axios.post('/api/restaurants', restaurant)
             .catch(err => {
+                console.log("error");
                 console.error(err);
-                this.setState({restaurants: restaurants});
-            });
+            })
+            .then(doc => {
+                let restaurants = this.state.restaurants;
+
+                let newRestaurants = restaurants.concat([doc.data]);
+                console.log(doc.data);
+
+                this.setState({restaurants: newRestaurants}, function () {
+                    console.log(this.state.restaurants);
+                });
+
+            })
     }
 
     handleCuisineSubmit(cuisine) {
-        let cuisines = this.state.cuisines;
-
-        let newCuisines = cuisines.concat([cuisine]);
-        this.setState({cuisines: newCuisines}, function () {
-            console.log(this.state.cuisines);
-        });
-
         axios.post('/api/cuisines', cuisine)
             .catch(err => {
                 console.error(err);
-                this.setState({cuisines: cuisines});
-            });
+            })
+            .then(doc => {
+                let cuisines = this.state.cuisines;
+
+                let newCuisines = cuisines.concat([doc.data]);
+                this.setState({cuisines: newCuisines}, function () {
+                    console.log(this.state.cuisines);
+                });
+            })
     }
 
     handleFoodTagSubmit(FoodTag) {
-        let food_tags = this.state.food_tags;
-
-        let newFoodTags = food_tags.concat([FoodTag]);
-        this.setState({food_tags: newFoodTags}, function () {
-            console.log(this.state.food_tags);
-        });
-
         axios.post('/api/foodtags', FoodTag)
             .catch(err => {
                 console.error(err);
-                this.setState({food_tags: food_tags});
-            });
+            })
+            .then(doc=> {
+                let food_tags = this.state.food_tags;
+
+                let newFoodTags = food_tags.concat([doc.data]);
+                this.setState({food_tags: newFoodTags}, function () {
+                    console.log(this.state.food_tags);
+                });
+            })
     }
 
     handleIngredientTagSubmit(Ing) {
-        let ing = this.state.ingredient_tags;
-
-        let newingredient_tags = ing.concat([Ing]);
-        this.setState({ingredient_tags: newingredient_tags}, function () {
-            console.log(this.state.ingredient_tags);
-        });
-
         axios.post('/api/ingredienttags', Ing)
             .catch(err => {
                 console.error(err);
-                this.setState({ingredient_tags: ing});
-            });
+            })
+            .then(doc=>{
+                let ing = this.state.ingredient_tags;
+
+                let newingredient_tags = ing.concat([doc.data]);
+                this.setState({ingredient_tags: newingredient_tags}, function () {
+                    console.log(this.state.ingredient_tags);
+                });
+
+            })
     }
 
     handleRegionSubmit(reg) {
-        let regions = this.state.regions;
-        let newReg= reg;
-        newReg.sub_zip_codes = reg.zip_codes.split(",");
-        newReg.sub_regions = reg.sub_reg.split(",");
-
-        let newRegions = regions.concat([newReg]);
-        this.setState({regions: newRegions}, function () {
-            console.log(this.state.regions);
-        });
-
         axios.post('/api/regions', reg)
             .catch(err => {
                 console.error(err);
-                this.setState({regions: regions});
-            });
+
+            })
+            .then(doc=>{
+                let regions = this.state.regions;
+                let newRegions = regions.concat([doc.data]);
+                this.setState({regions: newRegions}, function () {
+                    console.log(this.state.regions);
+                });
+            })
     }
 
 
     handleRestaurantDelete(id) {
+        console.log(id);
         axios.delete('api/restaurants/' + id)
             .then(res => {
+                console.log(res);
                 this.loadRestaurants();
             })
             .catch(err => {
@@ -339,7 +327,9 @@ export default class Restaurants extends Component {
     }
 
     displayRestaurant(res_id, res_name){
+        console.log('here');
         const that=this;
+        this.setState({foods: []});
         this.setState({res_id: res_id, res_name: res_name}, function () {
             that.loadFoods();
         });
@@ -373,10 +363,10 @@ export default class Restaurants extends Component {
         if(this.state.res_id && this.state.res_name){
             food_module =   <div className="col-md-6">
                                 <h2>{this.state.res_name}</h2>
-                                <Foods foods={this.state.foods} res_id={this.state.res_id}
+                                <Foods foods={this.state.foods} res_id={this.state.res_id} res_name={this.state.res_name}
                                     handleFoodSubmit={this.handleFoodSubmit}
                                     food_tags={this.state.food_tags} ing_tags={this.state.ingredient_tags}
-                                    cuisines={this.state.cuisines}/>
+                                    cuisines={this.state.cuisines} displayRes={this.displayRestaurant}/>
                             </div>
         }
 
@@ -407,15 +397,9 @@ export default class Restaurants extends Component {
                                 <label htmlFor="region">Region:</label>
                                 <Select
                                     id="region"
-                                    closeOnSelect={!this.state.stayOpen_r}
-                                    disabled={this.state.disabled_r}
-                                    multi
                                     onChange={this.handleRegionChange}
                                     options={REGIONS}
                                     placeholder="Select Region"
-                                    removeSelected={this.state.removeSelected_r}
-                                    rtl={this.state.rtl_r}
-                                    simpleValue
                                     value={this.state.option_region}
                                 />
 

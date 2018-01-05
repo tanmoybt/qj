@@ -75,7 +75,7 @@ export default class Info extends Component {
     render() {
         let cuisineNodes = this.props.cuisines.map(cuisine => {
             return (
-                <div key={cuisine.cuisine}>
+                <div key={cuisine._id}>
                     <h4>{cuisine.cuisine}</h4>
                 </div>
 
@@ -84,7 +84,7 @@ export default class Info extends Component {
 
         let foodTagNodes = this.props.food_tags.map(food_tag => {
             return (
-                <div key={food_tag.tag}>
+                <div key={food_tag._id}>
                     <h4>{food_tag.tag}</h4>
                 </div>
 
@@ -93,7 +93,7 @@ export default class Info extends Component {
 
         let ingredientTagNodes = this.props.ingredient_tags.map(ingredient_tag => {
             return (
-                <div key={ingredient_tag.tag}>
+                <div key={ingredient_tag._id}>
                     <h4>{ingredient_tag.tag}</h4>
                 </div>
 

@@ -29,10 +29,10 @@ apiRouter.route('/restaurants')
 
         console.log(restaurant);
 
-        restaurant.save(function(err) {
+        restaurant.save(function(err, doc) {
             if (err)
                 res.send(err);
-            res.json({ message: 'restaurant successfully added!' });
+            res.json(doc);
         });
     });
 
@@ -83,20 +83,21 @@ apiRouter.route('/restaurants/:restaurant_id')
     })
 
     .delete(function(req, res) {
+        console.log(req.params.restaurant_id);
         Restaurant.remove({ _id: req.params.restaurant_id }, function(err, restaurant) {
             if (err)
                 res.send(err);
             else {
+                console.log("success");
                 Food.remove({ res_id: req.params.restaurant_id }, function(err, restaurant) {
                     if (err)
                     res.send(err);
                     else {
-                
-                        res.json({ message: 'foods has been deleted' })
+                        console.log("foods deleted");
+                        res.json({ message: 'foods & restaurant has been deleted' })
                     }
             
                 });
-                res.json({ message: 'restaurant has been deleted' })
             }
             
         })
@@ -129,10 +130,10 @@ apiRouter.route('/foods')
 
         console.log(food);
 
-        food.save(function(err) {
+        food.save(function(err, doc) {
             if (err)
                 res.send(err);
-            res.json({ message: 'food successfully added!' });
+            res.json(doc);
         });
     });
 
@@ -161,10 +162,11 @@ apiRouter.route('/cuisines')
 
         //console.log(Cuisine);
 
-        cuisine.save(function(err) {
+        cuisine.save(function(err, doc) {
             if (err)
                 res.send(err);
-            res.json({ message: 'cuisine successfully added!' });
+            //console.log(doc);
+            res.json(doc);
         });
     });
 
@@ -182,10 +184,10 @@ apiRouter.route('/foodtags')
 
         //console.log(food_tag);
 
-        food_tag.save(function(err) {
+        food_tag.save(function(err, doc) {
             if (err)
                 res.send(err);
-            res.json({ message: 'food tag successfully added!' });
+            res.json(doc);
         });
     });
 
@@ -198,21 +200,29 @@ apiRouter.route('/regions')
         });
     })
     .post(function(req, res) {
+        console.log(req.body);
         const region = new Regions();
         region.name = req.body.name;
         region.zip_code = req.body.zip_code;
+
         let zips= req.body.zip_codes;
-        region.sub_zip_codes = zips.split(",");
+        zips = zips.split(",");
+        zips = zips.map(function(s) { return s.trim() });
+        region.sub_zip_codes = zips;
+
         let regions = req.body.sub_reg;
+        regions = regions.split(",");
+        regions = regions.map(function(s) { return s.trim() });
         //console.log(req.body.sub_regions);
-        region.sub_regions = regions.split(",");
+        region.sub_regions = regions;
 
         //console.log(food_tag);
+        //console.log(region);
 
-        region.save(function(err) {
+        region.save(function(err, doc) {
             if (err)
                 res.send(err);
-            res.json({ message: 'region successfully added!' });
+            res.json(doc);
         });
     });
 
@@ -230,10 +240,10 @@ apiRouter.route('/ingredienttags')
 
         //console.log(ingredient_tag);
 
-        ingredient_tag.save(function(err) {
+        ingredient_tag.save(function(err, doc) {
             if (err)
                 res.send(err);
-            res.json({ message: 'ingredient successfully added!' });
+            res.json(doc);
         });
     });
 

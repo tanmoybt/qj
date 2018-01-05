@@ -94,17 +94,17 @@ export default class Foods extends Component {
     }
 
     handleFoodSizeChange(i, val) {
-        console.log(i);
+        //console.log(i);
 
-        let foods= this.state.food_size;
+        let foods = this.state.food_size;
         foods[i].size = val;
 
         this.setState({food_size: foods});
     }
 
     handlePriceChange(i, val) {
-        console.log(i);
-        let foods= this.state.food_size;
+        //console.log(i);
+        let foods = this.state.food_size;
         foods[i].price = val;
 
         this.setState({food_size: foods});
@@ -149,12 +149,12 @@ export default class Foods extends Component {
             return;
         }
         let res = 1;
-        if(this.props.res_id) res=this.props.res_id;
+        if (this.props.res_id) res = this.props.res_id;
 
         console.log(res);
         let food = {
-            _id:food_name, res_id: res, food_name: food_name, food_tags: food_tags, ingredient_tags:ing_tags,
-            food_size: food_sizes, cuisine: cuisine, rating: rating, image:image
+            _id: food_name, res_id: res, food_name: food_name, food_tags: food_tags, ingredient_tags: ing_tags,
+            food_size: food_sizes, cuisine: cuisine, rating: rating, image: image
         };
 
         this.props.handleFoodSubmit(food);
@@ -164,7 +164,7 @@ export default class Foods extends Component {
 
         axios.delete('api/foods/' + id)
             .then(res => {
-
+                this.props.displayRes(this.props.res_id, this.props.res_name);
             })
             .catch(err => {
                 console.error(err);
@@ -172,15 +172,17 @@ export default class Foods extends Component {
     }
 
     addSizeFields() {
-        let foods= this.state.food_size;
-        let newFoods = foods.concat([{size: 'Single',
-            price: ''}]);
+        let foods = this.state.food_size;
+        let newFoods = foods.concat([{
+            size: 'Single',
+            price: ''
+        }]);
         this.setState({food_size: newFoods});
     }
 
     deleteSize(i) {
         console.log(i);
-        let foods= this.state.food_size;
+        let foods = this.state.food_size;
 
         let fruits = foods;
         fruits.splice(i, 1);
@@ -203,8 +205,8 @@ export default class Foods extends Component {
             i++;
             return (
                 <FoodSize key={i} food_size={that.state.food_size[i].size} price={that.state.food_size[i].price}
-                changeSize={that.handleFoodSizeChange} changePrice={that.handlePriceChange}
-                index={i} deleteSize={that.deleteSize}/>
+                          changeSize={that.handleFoodSizeChange} changePrice={that.handlePriceChange}
+                          index={i} deleteSize={that.deleteSize}/>
             )
         });
 
@@ -230,79 +232,79 @@ export default class Foods extends Component {
             <div className="col-md-8">
                 {foodNodes}
                 <br/><br/>
-                <div>
-                    <label htmlFor="name">Food Name:</label>
-                    <input type="text" className="form-control" value={this.state.food_name}
-                           onChange={this.handleFoodNameChange} id="name"/>
+                    <div>
+                        <label htmlFor="name">Food Name:</label>
+                        <input type="text" className="form-control" value={this.state.food_name}
+                               onChange={this.handleFoodNameChange} id="name"/>
 
-                    <label htmlFor="food_tag">Food Tags:</label>
-                    <Select
-                        id="food_tag"
-                        closeOnSelect={!this.state.stayOpen_f}
-                        disabled={this.state.disabled_f}
-                        multi
-                        onChange={this.handleFoodTagChange}
-                        options={FOOD_TAGS}
-                        placeholder="Select Food Tag"
-                        removeSelected={this.state.removeSelected_f}
-                        rtl={this.state.rtl_f}
-                        simpleValue
-                        value={this.state.option_food}
+                        <label htmlFor="food_tag">Food Tags:</label>
+                        <Select
+                            id="food_tag"
+                            closeOnSelect={!this.state.stayOpen_f}
+                            disabled={this.state.disabled_f}
+                            multi
+                            onChange={this.handleFoodTagChange}
+                            options={FOOD_TAGS}
+                            placeholder="Select Food Tag"
+                            removeSelected={this.state.removeSelected_f}
+                            rtl={this.state.rtl_f}
+                            simpleValue
+                            value={this.state.option_food}
                         />
 
-                    <label htmlFor="ing_tag">Ingredient Tags:</label>
-                    <Select
-                        id="ing_tag"
-                        closeOnSelect={!this.state.stayOpen_i}
-                        disabled={this.state.disabled_i}
-                        multi
-                        onChange={this.handleIngTagChange}
-                        options={ING_TAGS}
-                        placeholder="Select Ingredient Tag"
-                        removeSelected={this.state.removeSelected_i}
-                        rtl={this.state.rtl_i}
-                        simpleValue
-                        value={this.state.option_ing}
+                        <label htmlFor="ing_tag">Ingredient Tags:</label>
+                        <Select
+                            id="ing_tag"
+                            closeOnSelect={!this.state.stayOpen_i}
+                            disabled={this.state.disabled_i}
+                            multi
+                            onChange={this.handleIngTagChange}
+                            options={ING_TAGS}
+                            placeholder="Select Ingredient Tag"
+                            removeSelected={this.state.removeSelected_i}
+                            rtl={this.state.rtl_i}
+                            simpleValue
+                            value={this.state.option_ing}
                         />
 
-                    <label htmlFor="cui">Cuisines:</label>
-                    <Select
-                        id="cui"
-                        closeOnSelect={!this.state.stayOpen_c}
-                        disabled={this.state.disabled_c}
-                        multi
-                        onChange={this.handleCuisineChange}
-                        options={CUISINES}
-                        placeholder="Select Cuisine"
-                        removeSelected={this.state.removeSelected_c}
-                        rtl={this.state.rtl_c}
-                        simpleValue
-                        value={this.state.option_cuisine}
-                    />
+                        <label htmlFor="cui">Cuisines:</label>
+                        <Select
+                            id="cui"
+                            closeOnSelect={!this.state.stayOpen_c}
+                            disabled={this.state.disabled_c}
+                            multi
+                            onChange={this.handleCuisineChange}
+                            options={CUISINES}
+                            placeholder="Select Cuisine"
+                            removeSelected={this.state.removeSelected_c}
+                            rtl={this.state.rtl_c}
+                            simpleValue
+                            value={this.state.option_cuisine}
+                        />
+                    </div>
+                    {size}
+                    <br/>
+                    <button className="btn-success" onClick={this.addSizeFields}>ADD SIZE</button>
+                    <div className="form-group">
+
+                        <label htmlFor="rating">Rating</label>
+                        <input type="text" className="form-control" value={this.state.rating}
+                               onChange={this.handleRatingChange} id="rating"/>
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="image">Image</label>
+                        <input onChange={this.handleImageChange} type="text" className="form-control" id="image"/>
+                    </div>
+
+                    <input type='submit' onClick={this.handleFoodSubmit} className="btn-success" value='ADD'/>
+
+
+                    {/*<div className="fb-customerchat"*/}
+                    {/*page_id="1971669279741137"*/}
+                    {/*minimized="false">*/}
+                    {/*</div>*/}
+
                 </div>
-                {size}
-                <br/>
-                <button className="btn-success" onClick={this.addSizeFields}>ADD SIZE</button>
-                <div className="form-group">
-
-                    <label htmlFor="rating">Rating</label>
-                    <input type="text" className="form-control" value={this.state.rating}
-                           onChange={this.handleRatingChange} id="rating"/>
-                </div>
-                <div className="form-group">
-                    <label htmlFor="image">Image</label>
-                    <input onChange={this.handleImageChange} type="text" className="form-control" id="image"/>
-                </div>
-
-                <input type='submit' onClick={this.handleFoodSubmit} className="btn-success" value='ADD'/>
-
-
-                {/*<div className="fb-customerchat"*/}
-                {/*page_id="1971669279741137"*/}
-                {/*minimized="false">*/}
-                {/*</div>*/}
-
-            </div>
 
         )
     }

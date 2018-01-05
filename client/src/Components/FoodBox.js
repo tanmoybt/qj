@@ -12,6 +12,7 @@ export default class FoodBox extends Component {
         e.preventDefault();
 
         let id = this.props.food._id;
+        console.log(id);
         this.props.onFoodDelete(id);
         console.log('oops deleted');
     }
