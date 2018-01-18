@@ -23,6 +23,7 @@ export default class Foods extends Component {
             cuisine: '',
             rating: '',
             image: '',
+            desc: '',
 
             removeSelected_f: true,
             disabled_f: false,
@@ -59,6 +60,8 @@ export default class Foods extends Component {
         this.handleIngTagChange = this.handleIngTagChange.bind(this);
         this.handleRatingChange = this.handleRatingChange.bind(this);
         this.handleImageChange = this.handleImageChange.bind(this);
+        this.handleDescChange = this.handleDescChange.bind(this);
+
         this.handleFoodSubmit = this.handleFoodSubmit.bind(this);
         this.handleFoodDelete = this.handleFoodDelete.bind(this);
         this.addSizeFields = this.addSizeFields.bind(this);
@@ -87,6 +90,10 @@ export default class Foods extends Component {
 
     handleFoodNameChange(e) {
         this.setState({food_name: e.target.value});
+    }
+
+    handleDescChange(e){
+        this.setState({desc: e.target.value});
     }
 
     handleFoodTypeChange(e) {
@@ -144,6 +151,7 @@ export default class Foods extends Component {
 
         let rating = this.state.rating.trim();
         let image = this.state.image;
+        let desc = this.state.desc;
 
         if (!food_name || !food_sizes[0].price) {
             return;
@@ -154,7 +162,7 @@ export default class Foods extends Component {
         console.log(res);
         let food = {
             _id: food_name, res_id: res, food_name: food_name, food_tags: food_tags, ingredient_tags: ing_tags,
-            food_size: food_sizes, cuisine: cuisine, rating: rating, image: image
+            desc: desc, food_size: food_sizes, cuisine: cuisine, rating: rating, image: image
         };
 
         this.props.handleFoodSubmit(food);
@@ -286,6 +294,9 @@ export default class Foods extends Component {
                     <br/>
                     <button className="btn-success" onClick={this.addSizeFields}>ADD SIZE</button>
                     <div className="form-group">
+                        <label htmlFor="desc">Description</label>
+                        <textarea class="form-control" rows="2" id="desc" value={this.state.desc}
+                            onChange={this.handleDescChange}></textarea>
 
                         <label htmlFor="rating">Rating</label>
                         <input type="text" className="form-control" value={this.state.rating}

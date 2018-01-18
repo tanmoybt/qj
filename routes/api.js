@@ -26,6 +26,10 @@ apiRouter.route('/restaurants')
         restaurant.zip_code= req.body.zip;
         restaurant.cuisine= req.body.cuisine.split(",");
         restaurant.rating= req.body.rating;
+        restaurant.start_time= req.body.startTime;
+        restaurant.close_time= req.body.closeTime;
+        restaurant.email= req.body.email;
+        restaurant.phone= req.body.phone;
 
         console.log(restaurant);
 
@@ -125,6 +129,7 @@ apiRouter.route('/foods')
         food.cuisine= req.body.cuisine;
         food.rating= req.body.rating;
         food.image= req.body.image;
+        food.desc= req.body.desc;
 
         console.log(food.res_id);
 

@@ -17,6 +17,7 @@ const FoodsSchema = new Schema({
     rating: Number,
     price: Number,
     index: Number,
+    desc: String,
     image: String,
     cuisine: [String]
 });

@@ -23,6 +23,11 @@ export default class Restaurants extends Component {
             logo: '',
             image: '',
             desc: '',
+            startTime: '10.00 AM',
+            closeTime: '10.00 PM',
+            email: '',
+            phone: '',
+
             restaurants: [],
             res_id: '',
             res_name: '',
@@ -60,6 +65,11 @@ export default class Restaurants extends Component {
         this.handleImageChange = this.handleImageChange.bind(this);
         this.handleLogoChange = this.handleLogoChange.bind(this);
         this.handleDescChange = this.handleDescChange.bind(this);
+
+        this.handleStartTimeChange = this.handleStartTimeChange.bind(this);
+        this.handleCloseTimeChange = this.handleCloseTimeChange.bind(this);
+        this.handleEmailChange = this.handleEmailChange.bind(this);
+        this.handlePhoneChange = this.handlePhoneChange.bind(this);
 
         this.handleRestaurantSubmit = this.handleRestaurantSubmit.bind(this);
         this.handleCuisineSubmit = this.handleCuisineSubmit.bind(this);
@@ -122,6 +132,22 @@ export default class Restaurants extends Component {
         this.setState({desc: e.target.value});
     }
 
+    handleStartTimeChange(e) {
+        this.setState({startTime: e.target.value});
+    }
+
+    handleCloseTimeChange(e) {
+        this.setState({closeTime: e.target.value});
+    }
+
+    handleEmailChange(e) {
+        this.setState({email: e.target.value});
+    }
+
+    handlePhoneChange(e) {
+        this.setState({phone: e.target.value});
+    }
+
 
     componentDidMount() {
         this.loadRestaurants();
@@ -139,7 +165,7 @@ export default class Restaurants extends Component {
                 console.log("data");
                 console.log(response.data);
 
-                this.setState({restaurants: []});
+                this.setState({restaurants: [], res_id: '', res_name: ''});
 
                 if(response.data.length){
                     this.setState({restaurants: response.data, res_id: response.data[0]._id, res_name: response.data[0].name}, function(){
@@ -228,11 +254,18 @@ export default class Restaurants extends Component {
         let zip = this.state.zipCode.trim();
         let cuisine = this.state.option_cuisine.trim();
         let rating = this.state.rating.trim();
-        if (!name || !location) {
+
+        let startTime = this.state.startTime.trim();
+        let closeTime = this.state.closeTime.trim();
+        let email = this.state.email.trim();
+        let phone = this.state.phone.trim();
+
+
+        if (!name || !location || !region || !email) {
             return;
         }
-        let restaurant = {name: name, location: location, region: region,
-                            zip: zip, cuisine: cuisine, rating: rating};
+        let restaurant = {name: name, location: location, region: region, startTime:startTime, closeTime:closeTime,
+                            zip: zip, cuisine: cuisine, rating: rating, email: email, phone:phone};
 
         axios.post('/api/restaurants', restaurant)
             .catch(err => {
@@ -381,6 +414,7 @@ export default class Restaurants extends Component {
                 </div>
                 <div className="row">
                     <div className="col-md-6">
+                        <h3>RESTAURANTS</h3>
                         {restaurantNodes}
                         <br/><br/>
                         <form onSubmit={this.handleRestaurantSubmit}>
@@ -422,10 +456,41 @@ export default class Restaurants extends Component {
                                     simpleValue
                                     value={this.state.option_cuisine}
                                 />
+                            </div>
+                            <div className="row">
+                                <div className="col-md-4">
+                                    <label htmlFor="rating">Rating</label>
+                                    <input placeholder="Rating" type="text" className="form-control" value={this.state.rating}
+                                           onChange={this.handleRatingChange}  id="rating"/>
+                                </div>
+                                <div className="col-md-4">
+                                    <label htmlFor="start">Start Time</label>
+                                    <input placeholder="Start time" onChange={this.handleStartTimeChange} type="text"
+                                           className="form-control" id="start" value={this.state.startTime}/>
 
-                                <label htmlFor="rating">Rating</label>
-                                <input type="text" className="form-control" value={this.state.rating}
-                                       onChange={this.handleRatingChange}  id="rating"/>
+                                </div>
+                                <div className="col-md-4">
+                                    <label htmlFor="close">Close time</label>
+                                    <input onChange={this.handleCloseTimeChange} type="text" className="form-control"
+                                           id="close" value={this.state.closeTime}/>
+
+                                </div>
+
+                            </div>
+                            <div className="row">
+                                <div className="col-md-8">
+                                    <label htmlFor="email">Email Address</label>
+                                    <input placeholder="Email" onChange={this.handleEmailChange} type="text" className="form-control"
+                                           value={this.state.email} id="email"/>
+
+                                </div>
+                                <div className="col-md-4">
+                                    <label htmlFor="phone">Phone No.</label>
+                                    <input placeholder="Phone No." onChange={this.handlePhoneChange} type="text" className="form-control"
+                                           value={this.state.phone} id="phone"/>
+
+                                </div>
+
                             </div>
                             <div className="form-group">
                                 <label htmlFor="logo">Logo</label>
