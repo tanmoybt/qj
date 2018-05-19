@@ -1,5 +1,14 @@
 # react-input-autosize
 
+## v2.2.1 / 2018-01-10
+
+* fixed; invalid logic in SSR support check, thanks [Rakha Kanz Kautsar](https://github.com/rkkautsar)
+
+## v2.2.0 / 2018-01-09
+
+* added; `extraWidth` prop allows you to customise how much width is added to the detected width
+* fixed; SSR support is more robust, thanks [Ivo Bathke](https://github.com/ivoba)
+
 ## v2.1.2 / 2017-11-27
 
 * fixed; `window` reference is now guarded for SSR support, thanks [Wout Mertens](https://github.com/wmertens)
