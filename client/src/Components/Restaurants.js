@@ -53,15 +53,11 @@ export default class Restaurants extends Component {
             stayOpen_r: false,
             value_r: [],
             rtl_r: false,
-<<<<<<< HEAD
             option_region: '',
 
             cuisineEnabled: false,
             foodtagEnabled: false,
             ingredienttagEnabled: false
-=======
-            option_region: ''
->>>>>>> 96a18f74ab0a1836c4ba15a1844d42b4155bc0b7
         };
 
         this.handleNameChange = this.handleNameChange.bind(this);
@@ -294,10 +290,7 @@ export default class Restaurants extends Component {
     }
 
     handleCuisineSubmit(cuisine) {
-<<<<<<< HEAD
         this.setState({cuisineEnabled: true});
-=======
->>>>>>> 96a18f74ab0a1836c4ba15a1844d42b4155bc0b7
         axios.post('/api/cuisines', cuisine)
             .catch(err => {
                 console.error(err);
@@ -306,21 +299,14 @@ export default class Restaurants extends Component {
                 let cuisines = this.state.cuisines;
 
                 let newCuisines = cuisines.concat([doc.data]);
-<<<<<<< HEAD
                 this.setState({cuisines: newCuisines, cuisineEnabled: false}, function () {
-=======
-                this.setState({cuisines: newCuisines}, function () {
->>>>>>> 96a18f74ab0a1836c4ba15a1844d42b4155bc0b7
                     console.log(this.state.cuisines);
                 });
             })
     }
 
     handleFoodTagSubmit(FoodTag) {
-<<<<<<< HEAD
         this.setState({foodtagEnabled: true});
-=======
->>>>>>> 96a18f74ab0a1836c4ba15a1844d42b4155bc0b7
         axios.post('/api/foodtags', FoodTag)
             .catch(err => {
                 console.error(err);
@@ -329,21 +315,14 @@ export default class Restaurants extends Component {
                 let food_tags = this.state.food_tags;
 
                 let newFoodTags = food_tags.concat([doc.data]);
-<<<<<<< HEAD
                 this.setState({food_tags: newFoodTags, foodtagEnabled: false}, function () {
-=======
-                this.setState({food_tags: newFoodTags}, function () {
->>>>>>> 96a18f74ab0a1836c4ba15a1844d42b4155bc0b7
                     console.log(this.state.food_tags);
                 });
             })
     }
 
     handleIngredientTagSubmit(Ing) {
-<<<<<<< HEAD
         this.setState({ingredienttagEnabled: true});
-=======
->>>>>>> 96a18f74ab0a1836c4ba15a1844d42b4155bc0b7
         axios.post('/api/ingredienttags', Ing)
             .catch(err => {
                 console.error(err);
@@ -352,11 +331,7 @@ export default class Restaurants extends Component {
                 let ing = this.state.ingredient_tags;
 
                 let newingredient_tags = ing.concat([doc.data]);
-<<<<<<< HEAD
                 this.setState({ingredient_tags: newingredient_tags, ingredienttagEnabled: false}, function () {
-=======
-                this.setState({ingredient_tags: newingredient_tags}, function () {
->>>>>>> 96a18f74ab0a1836c4ba15a1844d42b4155bc0b7
                     console.log(this.state.ingredient_tags);
                 });
 
@@ -539,12 +514,9 @@ export default class Restaurants extends Component {
                         <br/>
                         <Info cuisines={this.state.cuisines} food_tags={this.state.food_tags}
                               ingredient_tags={this.state.ingredient_tags}
-<<<<<<< HEAD
                               cuisineEnabled={this.state.cuisineEnabled}
                               foodtagEnabled={this.state.foodtagEnabled}
                               ingredienttagEnabled={this.state.ingredienttagEnabled}
-=======
->>>>>>> 96a18f74ab0a1836c4ba15a1844d42b4155bc0b7
                                 handleCuisine={this.handleCuisineSubmit}
                                 handleFoodTag={this.handleFoodTagSubmit}
                                 handleIngredientTag={this.handleIngredientTagSubmit}/>

@@ -295,11 +295,7 @@ export default class Foods extends Component {
                     <button className="btn-success" onClick={this.addSizeFields}>ADD SIZE</button>
                     <div className="form-group">
                         <label htmlFor="desc">Description</label>
-<<<<<<< HEAD
                         <textarea className="form-control" rows="2" id="desc" value={this.state.desc}
-=======
-                        <textarea class="form-control" rows="2" id="desc" value={this.state.desc}
->>>>>>> 96a18f74ab0a1836c4ba15a1844d42b4155bc0b7
                             onChange={this.handleDescChange}></textarea>
 
                         <label htmlFor="rating">Rating</label>

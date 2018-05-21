@@ -113,11 +113,7 @@ export default class Info extends Component {
 
                             </div>
                             <br/>
-<<<<<<< HEAD
                             <input type='submit' className="btn-success" value='ADD' disabled={this.props.cuisineEnabled}/>
-=======
-                            <input type='submit' className="btn-success" value='ADD'/>
->>>>>>> 96a18f74ab0a1836c4ba15a1844d42b4155bc0b7
                         </form>
                     </div>
                     <div className="col-md-4">
@@ -129,11 +125,7 @@ export default class Info extends Component {
                                        onChange={this.handleFoodTagChange} id="name"/>
                             </div>
                             <br/>
-<<<<<<< HEAD
                             <input type='submit' className="btn-success" value='ADD' disabled={this.props.foodtagEnabled}/>
-=======
-                            <input type='submit' className="btn-success" value='ADD'/>
->>>>>>> 96a18f74ab0a1836c4ba15a1844d42b4155bc0b7
                         </form>
                     </div>
                     <div className="col-md-4">
@@ -145,11 +137,7 @@ export default class Info extends Component {
                                        onChange={this.handleIngredientTagChange} id="name"/>
                             </div>
                             <br/>
-<<<<<<< HEAD
                             <input type='submit' className="btn-success" value='ADD' disabled={this.props.ingredienttagEnabled}/>
-=======
-                            <input type='submit' className="btn-success" value='ADD'/>
->>>>>>> 96a18f74ab0a1836c4ba15a1844d42b4155bc0b7
                         </form>
                     </div>
                 </div>

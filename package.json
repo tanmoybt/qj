@@ -15,7 +15,6 @@
     "apiai": "^4.0.3",
     "axios": "^0.16.2",
     "cors": "^2.8.4",
-<<<<<<< HEAD
     "express": "^4.16.3",
     "mongoose": "^4.13.13",
     "mongoose-paginate": "^5.0.3",
@@ -24,15 +23,5 @@
     "nodemon": "^1.17.4",
     "react-select": "^1.2.1",
     "request": "^2.86.0"
-=======
-    "express": "^4.16.2",
-    "mongoose": "^4.12.2",
-    "mongoose-paginate": "^5.0.3",
-    "node-geocoder": "^3.21.0",
-    "node-wit": "^4.3.0",
-    "nodemon": "^1.12.1",
-    "react-select": "^1.1.0",
-    "request": "^2.83.0"
->>>>>>> 96a18f74ab0a1836c4ba15a1844d42b4155bc0b7
   }
 }
