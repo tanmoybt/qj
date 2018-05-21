@@ -1,42 +1,36 @@
 
 
 module.exports.genGetLocation = function () {
-    return {
-        "text": "Please share your location so I can find restaurants for you:",
-        "quick_replies": [
-            {
-                "content_type": "location",
-            },
-            {
-                "content_type": "text",
-                "title": "Dhanmondi",
-                "payload": "REGION_Dhanmondi_1215"
-            },
-            {
-                "content_type": "text",
-                "title": "University",
-                "payload": "REGION_University_1111"
-            }
-        ]
-    };
+    let location_reply= {
+                            "content_type": "location"
+                        };
+
+    Regions.find(function (err, regions) {
+        if (err) return err;
+        let replies = makeTemplate(regions);
+        replies.unshift(location_reply);
+
+        return {
+            "text": "Please select a region to find restaurants in",
+            "quick_replies": replies
+        };
+    
+    })
+
 };
 
 module.exports.genGetRegion = function () {
-    return {
-        "text": "Please select a region to find restaurants in",
-        "quick_replies": [
-            {
-                "content_type": "text",
-                "title": "Dhanmondi",
-                "payload": "REGION_Dhanmondi_1215"
-            },
-            {
-                "content_type": "text",
-                "title": "University",
-                "payload": "REGION_University_1111"
-            }
-        ]
-    };
+    Regions.find(function (err, regions) {
+        if (err) return err;
+        let replies = makeTemplate(regions);
+
+        return {
+            "text": "Please select a region to find restaurants in",
+            "quick_replies": replies
+        };
+    
+    })
+    
 };
 
 module.exports.genGetAddress = function () {
@@ -49,4 +43,22 @@ module.exports.genGetAddress = function () {
         ]
     };
 };
+
+function makeTemplate(regions) {
+    if (!regions.size) {
+        let messageElements = regions.map(region => {
+            return (
+                {
+                    "content_type": "text",
+                    "title": region.name,
+                    "payload": "REGION_" + region.name + "_" + region.zip_code
+                }
+            )
+        });
+        return messageElements;
+    }
+    else {
+        return [];
+    }
+}
 
