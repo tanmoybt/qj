@@ -53,7 +53,11 @@ export default class Restaurants extends Component {
             stayOpen_r: false,
             value_r: [],
             rtl_r: false,
-            option_region: ''
+            option_region: '',
+
+            cuisineEnabled: false,
+            foodtagEnabled: false,
+            ingredienttagEnabled: false
         };
 
         this.handleNameChange = this.handleNameChange.bind(this);
@@ -286,6 +290,7 @@ export default class Restaurants extends Component {
     }
 
     handleCuisineSubmit(cuisine) {
+        this.setState({cuisineEnabled: true});
         axios.post('/api/cuisines', cuisine)
             .catch(err => {
                 console.error(err);
@@ -294,13 +299,14 @@ export default class Restaurants extends Component {
                 let cuisines = this.state.cuisines;
 
                 let newCuisines = cuisines.concat([doc.data]);
-                this.setState({cuisines: newCuisines}, function () {
+                this.setState({cuisines: newCuisines, cuisineEnabled: false}, function () {
                     console.log(this.state.cuisines);
                 });
             })
     }
 
     handleFoodTagSubmit(FoodTag) {
+        this.setState({foodtagEnabled: true});
         axios.post('/api/foodtags', FoodTag)
             .catch(err => {
                 console.error(err);
@@ -309,13 +315,14 @@ export default class Restaurants extends Component {
                 let food_tags = this.state.food_tags;
 
                 let newFoodTags = food_tags.concat([doc.data]);
-                this.setState({food_tags: newFoodTags}, function () {
+                this.setState({food_tags: newFoodTags, foodtagEnabled: false}, function () {
                     console.log(this.state.food_tags);
                 });
             })
     }
 
     handleIngredientTagSubmit(Ing) {
+        this.setState({ingredienttagEnabled: true});
         axios.post('/api/ingredienttags', Ing)
             .catch(err => {
                 console.error(err);
@@ -324,7 +331,7 @@ export default class Restaurants extends Component {
                 let ing = this.state.ingredient_tags;
 
                 let newingredient_tags = ing.concat([doc.data]);
-                this.setState({ingredient_tags: newingredient_tags}, function () {
+                this.setState({ingredient_tags: newingredient_tags, ingredienttagEnabled: false}, function () {
                     console.log(this.state.ingredient_tags);
                 });
 
@@ -507,6 +514,9 @@ export default class Restaurants extends Component {
                         <br/>
                         <Info cuisines={this.state.cuisines} food_tags={this.state.food_tags}
                               ingredient_tags={this.state.ingredient_tags}
+                              cuisineEnabled={this.state.cuisineEnabled}
+                              foodtagEnabled={this.state.foodtagEnabled}
+                              ingredienttagEnabled={this.state.ingredienttagEnabled}
                                 handleCuisine={this.handleCuisineSubmit}
                                 handleFoodTag={this.handleFoodTagSubmit}
                                 handleIngredientTag={this.handleIngredientTagSubmit}/>

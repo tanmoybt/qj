@@ -113,7 +113,7 @@ export default class Info extends Component {
 
                             </div>
                             <br/>
-                            <input type='submit' className="btn-success" value='ADD'/>
+                            <input type='submit' className="btn-success" value='ADD' disabled={this.props.cuisineEnabled}/>
                         </form>
                     </div>
                     <div className="col-md-4">
@@ -125,7 +125,7 @@ export default class Info extends Component {
                                        onChange={this.handleFoodTagChange} id="name"/>
                             </div>
                             <br/>
-                            <input type='submit' className="btn-success" value='ADD'/>
+                            <input type='submit' className="btn-success" value='ADD' disabled={this.props.foodtagEnabled}/>
                         </form>
                     </div>
                     <div className="col-md-4">
@@ -137,7 +137,7 @@ export default class Info extends Component {
                                        onChange={this.handleIngredientTagChange} id="name"/>
                             </div>
                             <br/>
-                            <input type='submit' className="btn-success" value='ADD'/>
+                            <input type='submit' className="btn-success" value='ADD' disabled={this.props.ingredienttagEnabled}/>
                         </form>
                     </div>
                 </div>
