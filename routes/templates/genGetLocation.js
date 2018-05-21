@@ -30,7 +30,6 @@ module.exports.genGetRegion = function () {
         };
     
     })
-    
 };
 
 module.exports.genGetAddress = function () {
