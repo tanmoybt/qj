@@ -411,126 +411,128 @@ export default class Restaurants extends Component {
         }
 
         return (
-            <div className="container-fluid">
-                <div className="row">
-                    <div className="col-md-12">
-                        <h3 className="text-center text-success">
-                            WELCOME TO QUIJINN
-                        </h3>
+            <div className="App container-fluid">
+                <div className="container-fluid">
+                    <div className="row">
+                        <div className="col-md-12">
+                            <h3 className="text-center text-success">
+                                WELCOME TO QUIJINN
+                            </h3>
+                        </div>
                     </div>
-                </div>
-                <div className="row">
-                    <div className="col-md-6">
-                        <h3>RESTAURANTS</h3>
-                        {restaurantNodes}
-                        <br/><br/>
-                        <form onSubmit={this.handleRestaurantSubmit}>
-                            <div>
-                                <label htmlFor="name">Name:</label>
-                                <input type="text" className="form-control" value={this.state.name}
-                                       onChange={this.handleNameChange} id="name"/>
+                    <div className="row">
+                        <div className="col-md-6">
+                            <h3>RESTAURANTS</h3>
+                            {restaurantNodes}
+                            <br/><br/>
+                            <form onSubmit={this.handleRestaurantSubmit}>
+                                <div>
+                                    <label htmlFor="name">Name:</label>
+                                    <input type="text" className="form-control" value={this.state.name}
+                                           onChange={this.handleNameChange} id="name"/>
 
-                                <label htmlFor="location">Location:</label>
-                                <input type="text" className="form-control" value={this.state.location}
-                                       onChange={this.handleLocationChange} id="location"/>
-                            </div>
-                            <div>
-                                <label htmlFor="region">Region:</label>
-                                <Select
-                                    id="region"
-                                    onChange={this.handleRegionChange}
-                                    options={REGIONS}
-                                    placeholder="Select Region"
-                                    value={this.state.option_region}
-                                />
-
-                                <label htmlFor="zip">ZIP Code</label>
-                                <input type="text" className="form-control" value={this.state.zipCode}
-                                       onChange={this.handlezipCodeChange}  id="zip"/>
-                            </div>
-                            <div className="form-group">
-                                <label htmlFor="cuisine">Cuisine</label>
-                                <Select
-                                    id="cuisine"
-                                    closeOnSelect={!this.state.stayOpen}
-                                    disabled={this.state.disabled}
-                                    multi
-                                    onChange={this.handleCuisineChange}
-                                    options={CUISINES}
-                                    placeholder="Select Cuisines"
-                                    removeSelected={this.state.removeSelected}
-                                    rtl={this.state.rtl}
-                                    simpleValue
-                                    value={this.state.option_cuisine}
-                                />
-                            </div>
-                            <div className="row">
-                                <div className="col-md-4">
-                                    <label htmlFor="rating">Rating</label>
-                                    <input placeholder="Rating" type="text" className="form-control" value={this.state.rating}
-                                           onChange={this.handleRatingChange}  id="rating"/>
+                                    <label htmlFor="location">Location:</label>
+                                    <input type="text" className="form-control" value={this.state.location}
+                                           onChange={this.handleLocationChange} id="location"/>
                                 </div>
-                                <div className="col-md-4">
-                                    <label htmlFor="start">Start Time</label>
-                                    <input placeholder="Start time" onChange={this.handleStartTimeChange} type="text"
-                                           className="form-control" id="start" value={this.state.startTime}/>
+                                <div>
+                                    <label htmlFor="region">Region:</label>
+                                    <Select
+                                        id="region"
+                                        onChange={this.handleRegionChange}
+                                        options={REGIONS}
+                                        placeholder="Select Region"
+                                        value={this.state.option_region}
+                                    />
 
+                                    <label htmlFor="zip">ZIP Code</label>
+                                    <input type="text" className="form-control" value={this.state.zipCode}
+                                           onChange={this.handlezipCodeChange}  id="zip"/>
                                 </div>
-                                <div className="col-md-4">
-                                    <label htmlFor="close">Close time</label>
-                                    <input onChange={this.handleCloseTimeChange} type="text" className="form-control"
-                                           id="close" value={this.state.closeTime}/>
-
+                                <div className="form-group">
+                                    <label htmlFor="cuisine">Cuisine</label>
+                                    <Select
+                                        id="cuisine"
+                                        closeOnSelect={!this.state.stayOpen}
+                                        disabled={this.state.disabled}
+                                        multi
+                                        onChange={this.handleCuisineChange}
+                                        options={CUISINES}
+                                        placeholder="Select Cuisines"
+                                        removeSelected={this.state.removeSelected}
+                                        rtl={this.state.rtl}
+                                        simpleValue
+                                        value={this.state.option_cuisine}
+                                    />
                                 </div>
+                                <div className="row">
+                                    <div className="col-md-4">
+                                        <label htmlFor="rating">Rating</label>
+                                        <input placeholder="Rating" type="text" className="form-control" value={this.state.rating}
+                                               onChange={this.handleRatingChange}  id="rating"/>
+                                    </div>
+                                    <div className="col-md-4">
+                                        <label htmlFor="start">Start Time</label>
+                                        <input placeholder="Start time" onChange={this.handleStartTimeChange} type="text"
+                                               className="form-control" id="start" value={this.state.startTime}/>
 
-                            </div>
-                            <div className="row">
-                                <div className="col-md-8">
-                                    <label htmlFor="email">Email Address</label>
-                                    <input placeholder="Email" onChange={this.handleEmailChange} type="text" className="form-control"
-                                           value={this.state.email} id="email"/>
+                                    </div>
+                                    <div className="col-md-4">
+                                        <label htmlFor="close">Close time</label>
+                                        <input onChange={this.handleCloseTimeChange} type="text" className="form-control"
+                                               id="close" value={this.state.closeTime}/>
+
+                                    </div>
 
                                 </div>
-                                <div className="col-md-4">
-                                    <label htmlFor="phone">Phone No.</label>
-                                    <input placeholder="Phone No." onChange={this.handlePhoneChange} type="text" className="form-control"
-                                           value={this.state.phone} id="phone"/>
+                                <div className="row">
+                                    <div className="col-md-8">
+                                        <label htmlFor="email">Email Address</label>
+                                        <input placeholder="Email" onChange={this.handleEmailChange} type="text" className="form-control"
+                                               value={this.state.email} id="email"/>
+
+                                    </div>
+                                    <div className="col-md-4">
+                                        <label htmlFor="phone">Phone No.</label>
+                                        <input placeholder="Phone No." onChange={this.handlePhoneChange} type="text" className="form-control"
+                                               value={this.state.phone} id="phone"/>
+
+                                    </div>
 
                                 </div>
+                                <div className="form-group">
+                                    <label htmlFor="logo">Logo</label>
+                                    <input onChange={this.handleImageChange} type="text" className="form-control" id="logo"/>
 
-                            </div>
-                            <div className="form-group">
-                                <label htmlFor="logo">Logo</label>
-                                <input onChange={this.handleImageChange} type="text" className="form-control" id="logo"/>
+                                    <label htmlFor="image">Image</label>
+                                    <input onChange={this.handleLogoChange} type="text" className="form-control" id="image"/>
+                                </div>
 
-                                <label htmlFor="image">Image</label>
-                                <input onChange={this.handleLogoChange} type="text" className="form-control" id="image"/>
-                            </div>
+                                <input type='submit' className="btn-success" value='ADD'/>
+                            </form>
 
-                            <input type='submit' className="btn-success" value='ADD'/>
-                        </form>
+                            <br/>
+                            <br/>
+                            <Info cuisines={this.state.cuisines} food_tags={this.state.food_tags}
+                                  ingredient_tags={this.state.ingredient_tags}
+                                  cuisineEnabled={this.state.cuisineEnabled}
+                                  foodtagEnabled={this.state.foodtagEnabled}
+                                  ingredienttagEnabled={this.state.ingredienttagEnabled}
+                                    handleCuisine={this.handleCuisineSubmit}
+                                    handleFoodTag={this.handleFoodTagSubmit}
+                                    handleIngredientTag={this.handleIngredientTagSubmit}/>
 
-                        <br/>
-                        <br/>
-                        <Info cuisines={this.state.cuisines} food_tags={this.state.food_tags}
-                              ingredient_tags={this.state.ingredient_tags}
-                              cuisineEnabled={this.state.cuisineEnabled}
-                              foodtagEnabled={this.state.foodtagEnabled}
-                              ingredienttagEnabled={this.state.ingredienttagEnabled}
-                                handleCuisine={this.handleCuisineSubmit}
-                                handleFoodTag={this.handleFoodTagSubmit}
-                                handleIngredientTag={this.handleIngredientTagSubmit}/>
+                            <br/>
+                            <br/>
 
-                        <br/>
-                        <br/>
+                            <Region regions={this.state.regions} handleRegion={this.handleRegionSubmit}/>
+                            <br/>
+                            <br/>
 
-                        <Region regions={this.state.regions} handleRegion={this.handleRegionSubmit}/>
-                        <br/>
-                        <br/>
+                        </div>
+                        {food_module}
 
                     </div>
-                    {food_module}
-
                 </div>
             </div>
         )

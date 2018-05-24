@@ -22,11 +22,12 @@ module.exports.postbackProcessor = function (sender, postback) {
             sendRequestcall(sender, genWhat.genGetStarted(nameFormatted), function () {
                 const profile = new Profile();
                 profile.first_name = name.first_name;
-                profile.last_name = name.first_name;
+                profile.last_name = name.last_name;
                 profile.sender_id= sender;
 
+                
+                addProfile(profile, function(err, user) {});
                 console.log(profile);
-                profile.save(function(err) {});
             });
         });
     }
@@ -288,6 +289,8 @@ function getProfile(PSID, callback){
         //console.log(JSON.parse(response, null, 2));// Print the HTML for the Google homepage.
         console.log(info.first_name);
         console.log(info.last_name);
+
+        console.log(info);
         if(body){
             name= {
                 first_name: info.first_name,
@@ -298,4 +301,16 @@ function getProfile(PSID, callback){
     });
 
 
+}
+
+function addProfile (profile,cb){
+    Profile.find({sender_id : profile.sender_id}, function (err, docs) {
+        if (docs.length){
+            cb('Name exists already',null);
+        }else{
+            profile.save(function(err, user){
+                cb(err,user);
+            });
+        }
+    });
 }

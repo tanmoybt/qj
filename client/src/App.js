@@ -1,14 +1,11 @@
-import React, { Component } from 'react';
-import Restaurants from './Components/Restaurants';
+import React from 'react';
+import Routes from './routes';
 
-class App extends Component {
-  render() {
-    return (
-      <div className="App container-fluid">
-        <Restaurants/>
-      </div>
-    );
-  }
-}
+const App = () => (
+  <div>
+    <Routes />
+  </div>
+)
 
-export default App;
+export default App
+
