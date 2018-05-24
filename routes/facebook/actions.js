@@ -101,7 +101,11 @@ module.exports.actionsProcessor= function (sender, action, speech, parameters, r
                 else {
                     let messageData = {text: "Sorry, " + parameters.restaurant_name + " is not in our list yet, You could checkout other restaurants"};
                     sendRequestcall(sender, messageData, function () {
-                        sendRequest(sender, genLoc.genGetLocation());
+                        genLoc.genGetLocation(function(err, messageData){
+                            if(!err){
+                                sendRequest(sender, messageData);
+                            }
+                        });
                     });
                 }
             }
@@ -255,7 +259,11 @@ function sendPrevAction(sender){
             let parameters = pipeline.data[sender].lastactiontaken.parameters;
 
             if(action === 'setOrderGetLocation'){
-                sendRequest(sender, genLoc.genGetLocation(), function () {});
+                genLoc.genGetLocation(function(err, messageData){
+                    if(!err){
+                        sendRequest(sender, messageData);
+                    }
+                });
             }
             else if(action === 'addFoodGetQuantity'){
                 sendRequest(sender, {text: speech});

@@ -87,27 +87,6 @@ module.exports.messagesProcessor = function (sender, message) {
     }
 };
 
-
-function sendRequest(sender, messageData) {
-    request({
-        url: "https://graph.facebook.com/v2.6/me/messages",
-        qs: {access_token: PAGE_ACCESS_TOKEN},
-        method: "POST",
-        json: {
-            recipient: {id: sender},
-            message: messageData
-        }
-    }, function (err, response, body) {
-        if (err) {
-            console.log("sending error");
-            console.log(err);
-        } else if (response.body.error) {
-            console.log("response body error");
-            console.log(response.body.error);
-        }
-    })
-}
-
 function locationProcessor(sender, address, zipcode, region) {
     if(!address && region && zipcode){
         let messageData = {text: "I'm loading restaurants from "+ region + " for you..."};
@@ -223,6 +202,26 @@ function locationProcessor(sender, address, zipcode, region) {
             sendRequest(sender, genLoc.genGetRegion());
         });
     }
+}
+
+function sendRequest(sender, messageData) {
+    request({
+        url: "https://graph.facebook.com/v2.6/me/messages",
+        qs: {access_token: PAGE_ACCESS_TOKEN},
+        method: "POST",
+        json: {
+            recipient: {id: sender},
+            message: messageData
+        }
+    }, function (err, response, body) {
+        if (err) {
+            console.log("sending error");
+            console.log(err);
+        } else if (response.body.error) {
+            console.log("response body error");
+            console.log(response.body.error);
+        }
+    })
 }
 
 function sendRequestcall(sender, messageData, callback) {
