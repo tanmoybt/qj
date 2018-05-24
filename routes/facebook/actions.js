@@ -47,7 +47,11 @@ module.exports.actionsProcessor= function (sender, action, speech, parameters, r
         pipeline.setSenderData(sender);
         pipeline.data[sender].whattodo= 'ORDER';
         setLastAction(sender, action, speech, parameters);
-        sendRequest(sender, genLoc.genGetLocation());
+        genLoc.genGetLocation(function(err, messageData){
+            if(!err){
+                sendRequest(sender, messageData);
+            }
+        });
 
     }
 
@@ -70,7 +74,11 @@ module.exports.actionsProcessor= function (sender, action, speech, parameters, r
                     else {
                         messageData = {text: "Sorry, I could not find"+ parameters.cuisine+ "restaurants"};
                         sendRequestcall(sender, messageData, function () {
-                            sendRequest(sender, genLoc.genGetRegion());
+                            genLoc.genGetRegion(function(err, messageData){
+                                if(!err){
+                                    sendRequest(sender, messageData);
+                                }
+                            });
                         });
                     }
                 }
@@ -114,7 +122,12 @@ module.exports.actionsProcessor= function (sender, action, speech, parameters, r
                     else {
                         messageData = {text: "Sorry, I could not find "+ parameters.cuisine+ " restaurants"};
                         sendRequestcall(sender, messageData, function () {
-                            sendRequest(sender, genLoc.genGetRegion());
+                            
+                            genLoc.genGetRegion(function(err, messageData){
+                                if(!err){
+                                    sendRequest(sender, messageData);
+                                }
+                            });
                         });
                     }
                 }

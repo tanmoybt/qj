@@ -130,7 +130,11 @@ function locationProcessor(sender, address, zipcode, region) {
                     else {
                         messageData = {text: "Sorry, delivery in this area is currently off."};
                         sendRequestcall(sender, messageData, function () {
-                            sendRequest(sender, genLoc.genGetRegion());
+                            genLoc.genGetRegion(function(err, messageData){
+                                if(!err){
+                                    sendRequest(sender, messageData);
+                                }
+                            });
                         });
                     }
                 }
@@ -161,7 +165,11 @@ function locationProcessor(sender, address, zipcode, region) {
                         else {
                             messageData = {text: "Sorry, I could not find restaurants in this area. You could choose a region"};
                             sendRequestcall(sender, messageData, function () {
-                                sendRequest(sender, genLoc.genGetRegion());
+                                genLoc.genGetRegion(function(err, messageData){
+                                if(!err){
+                                    sendRequest(sender, messageData);
+                                }
+                            });
                             });
                         }
                     }
@@ -192,7 +200,11 @@ function locationProcessor(sender, address, zipcode, region) {
                         else {
                             messageData = {text: "Sorry, I could not find restaurants in this area. You could choose a region"};
                             sendRequestcall(sender, messageData, function () {
-                                sendRequest(sender, genLoc.genGetRegion());
+                                genLoc.genGetRegion(function(err, messageData){
+                                    if(!err){
+                                        sendRequest(sender, messageData);
+                                    }
+                                });
                             });
                         }
                     }

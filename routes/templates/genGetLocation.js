@@ -1,35 +1,55 @@
+const Regions = require('../../model/Regions');
 
-
-module.exports.genGetLocation = function () {
+module.exports.genGetLocation = function (callback) {
     let location_reply= {
                             "content_type": "location"
                         };
 
     Regions.find(function (err, regions) {
-        if (err) return err;
-        let replies = makeTemplate(regions);
-        replies.unshift(location_reply);
+        let replies = [];
+        replies.push(location_reply);
 
-        return {
-            "text": "Please select a region to find restaurants in",
-            "quick_replies": replies
-        };
+        let res = {
+                "text": "Please select a region to find restaurants in",
+                "quick_replies": replies
+            };
+
+        if (err) {
+            callback(null, res);
+        }
+        else{
+            replies = makeTemplate(regions);
+            replies.unshift(location_reply);
+            res = {
+                "text": "Please select a region to find restaurants in",
+                "quick_replies": replies
+            };
+            console.log(res);
+            callback(null, res);
+        }
     
-    })
+    });
 
 };
 
-module.exports.genGetRegion = function () {
+module.exports.genGetRegion = function (cb) {
     Regions.find(function (err, regions) {
-        if (err) return err;
-        let replies = makeTemplate(regions);
 
-        return {
-            "text": "Please select a region to find restaurants in",
-            "quick_replies": replies
-        };
+        if (err) {
+
+            cb(err, null);
+        }
+        else{
+            replies = makeTemplate(regions);
+            res = {
+                "text": "Please select a region to find restaurants in",
+                "quick_replies": replies
+            };
+
+            cb(null, res);
+        }
     
-    })
+    });
 };
 
 module.exports.genGetAddress = function () {
