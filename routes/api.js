@@ -309,10 +309,17 @@ apiRouter.route('/notification')
         Profiles.find(function(err, users){
             if(err) res.send(err);
             else {
-                let counter = users.length;
+                let len = users.length;
+                let counter=0;
                 users.map(user => {
-                    sendRequest(user.sender_id, messageData);
-                    //res.json({name : user.last_name});
+                    sendRequestcall(user.sender_id, messageData, function(){
+                        res.write(user.first_name);
+                        counter++;
+                        if(counter==len){
+                            res.end();
+                        }
+                    });
+                    
                 });
             }
         });
@@ -321,7 +328,7 @@ apiRouter.route('/notification')
 
 const PAGE_ACCESS_TOKEN = 'EAAcaq8rzMQoBAMr1FgOiTW3Y4rn3fMZApefDoSSqrztUBFD74YaC8wLR50ELPGQwcFrX7qz6JEUbeLZBDaQlimlpYj5ujLZBvOZAW8v2qCvtVhnWaKrYdqgqrQkENlPzqETQZC9A2MdUZAH6UHK42vGq8mcEuV78kCLnc1ZA7xBzwZDZD';
 
-function sendRequest(sender, messageData) {
+function sendRequestcall(sender, messageData, callback) {
     request({
         url: "https://graph.facebook.com/v2.6/me/messages",
         qs: {access_token: PAGE_ACCESS_TOKEN},
@@ -337,6 +344,9 @@ function sendRequest(sender, messageData) {
         } else if (response.body.error) {
             console.log("response body error");
             console.log(response.body.error);
+        }
+        else {
+            callback();
         }
     })
 }

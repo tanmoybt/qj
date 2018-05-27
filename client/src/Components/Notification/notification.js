@@ -36,6 +36,7 @@ export default class Notification extends Component {
                 console.error(err);
             })
             .then(doc => {
+                console.log("front");
                 console.log(doc);
             })
     }
